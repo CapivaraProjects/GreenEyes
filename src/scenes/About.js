@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import {Icon} from 'native-base'
+import {Avatar} from 'react-native-elements'
 import { AppRegistry, 
   Text,
   Image,
   View, 
-  StyleSheet, 
+  StyleSheet,
   } from 'react-native';
 
 
@@ -16,13 +17,12 @@ export default class About extends Component {
   };
   render() {
     return (
-      <View
-      style={styles.body}>
-        
-        <Image
-          style={styles.image}
-          source={require('GreenEyes/src/logo.jpeg')}
-          resizeMode="cover"
+      <View style={styles.container}>
+        <Avatar
+          size="xlarge"
+          rounded
+          source={require('../logo.jpeg')}
+          activeOpacity={0.7}
         />
         <Text style={styles.title}>GreenEyes</Text>
         <Text style={styles.description}>Descrição</Text>
@@ -32,21 +32,9 @@ export default class About extends Component {
 }
 
 const styles = StyleSheet.create({
-  image:{
-    width: 250,
-    height: 250,
-    borderWidth: 1,
-    borderRadius: 75,
-    alignSelf: 'center'
+  container: {
+    flex: 1,
   },
-
-  body:{
-    height: 70,
-    width: 300,
-    marginTop: 40,
-    alignSelf: 'center'
-  },
-
   title:{
     alignSelf: 'center',
     marginTop: 15 

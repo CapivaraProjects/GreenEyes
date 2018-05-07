@@ -77,8 +77,6 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
-apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
-
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -96,7 +94,7 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 26
     buildToolsVersion '27.0.3'
 
     defaultConfig {
@@ -136,15 +134,24 @@ android {
             }
         }
     }
+
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:23.0.1'
-    compile 'com.facebook.react:react-native:+'
+    implementation project(':react-native-image-picker')
+    implementation project(':react-native-vector-icons')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.facebook.react:react-native:+'
     // From node_modules
-}
+    implementation project(':react-native-vector-icons')
+    implementation(project(':react-native-camera')) {
+        exclude group: "com.google.android.gms"
+        exclude group: "com.android.support"
 
+        compile 'com.android.support:exifinterface:26.1.0'
+    }
+}
 // Run this once to be able to run the application with BUCK
 // puts all compile dependencies into folder libs for BUCK to use
 task copyDownloadableDepsToLibs(type: Copy) {

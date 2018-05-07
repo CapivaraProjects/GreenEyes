@@ -23,44 +23,47 @@ export default class Main extends Component {
         title: 'Main',
     };
     render() {
-        return (
-            <AppTabNavigator/>
-        );
+      return (
+        <AppTabNavigator/>
+      );
   }
 }
 
 const AppTabNavigator = TabNavigator({
   Howto:{
     screen: Howto,
-    navigationOptions: {header: null}
   },
   Plants:{
     screen: Plants,
   },
   Analisys:{
     screen: Analisys,
-    navigationOptions: {header: null}
   },
   User:{
     screen: User,
-    navigationOptions: {header: null}
   },
   About:{
     screen: About,
-    navigationOptions: {header: null}
-  }
-},
+    }
+  },
 {
   animationEnabled: true,
   swipeEnabled: true,
   tabBarPosition: "bottom",
+  backgroundColor: "#8BC34A",
   tabBarOptions: {
-    activeTintColor: "#000",
-    inactiveTintColor: "#d1cece",
+    activeTintColor: "#212121",
+    inactiveTintColor: "#DCEDC8",
+    style: {
+      backgroundColor: "#8BC34A"
+    },
+    navigationOptions: {header: null,
+      androidStatusBarColor:'#689F38'},
     showLabel: false,
     showIcon: true
-  }
-}
+  },
+  
+},
 );
 
 const styles = StyleSheet.create({

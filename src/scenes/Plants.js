@@ -1,11 +1,14 @@
 import {StackNavigator} from 'react-navigation';
 import React, { Component } from 'react';
-import { Container, Content, Card, CardItem, Thumbnail, Text, Button, Icon } from 'native-base';
+import ImagePicker from 'react-native-image-picker';
+import {SearchBar} from 'react-native-elements';
+import { Container, Content, List, ListItem, Thumbnail, Text, Icon } from 'native-base';
 import {
   Platform,
+  AppRegistry,
   StyleSheet,
+  Image,
   View,
-  Image
 } from 'react-native';
 
 
@@ -14,41 +17,38 @@ export default class Plants extends Component {
     tabBarIcon: ({tintColor}) => (
     <Icon name='search' style={{color: tintColor}} />
     )
-  };
+  };    
 
   render() {
-        return (
-            <Container>
-                <Content>
-                    <Card style={{ flex: 0 }}>
-                        <CardItem>
-                            <Thumbnail source={require('../logo.jpeg')} />
-                            <Text>Plants X</Text>
-                        </CardItem>
-
-                        <CardItem>                        
-                            <Image style={{ resizeMode: 'cover', width: null }} source={require('../tomate.jpg')} /> 
-                        </CardItem>
- 
-                        <CardItem>
-                            <Button transparent>
-                                <Icon name="ios-color-filter-outline"/>
-                                <Text>80 %</Text>
-                            </Button>                       
-                        </CardItem>
-                   </Card>
-                </Content>
-            </Container>
-        );
+      return (
+        <Container>
+          <SearchBar
+          lightTheme
+          round
+          searchIcon={{ size: 24 }}
+          onChangeText={('algumacoisa')}
+          onClear={('algumacoisa')}
+          placeholder='Digite o nome da planta' />
+            <Content>
+                <List>
+                    <ListItem>
+                        <Thumbnail square size={80} source={require('../tomate.jpg')} />
+                        <Text>Tomatão X</Text>
+                        <Text note> Tomate bão e vermelho</Text>
+                    </ListItem>
+                    <ListItem>
+                        <Thumbnail square size={80} source={require('../tomate2.jpg')} />
+                        <Text>Tomatão Y</Text>
+                        <Text note> Tomate vermelho e saboroso</Text>
+                    </ListItem>
+                    <ListItem>
+                        <Thumbnail square size={80} source={require('../tomate3.jpg')} />
+                        <Text>Tomatão W</Text>
+                        <Text note> Tomate pequeno</Text>
+                    </ListItem>
+                </List>
+            </Content>
+        </Container>
+      );
     }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-});
-
-
