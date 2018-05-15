@@ -3,7 +3,8 @@ import {StackNavigator} from 'react-navigation';
 import {BottomNavigation, Toolbar, COLOR, ThemeProvider } from 'react-native-material-ui'
 import React, { Component } from 'react';
 import { Navigator, NativeModules } from 'react-native';
-import { Container, Content, List, ListItem, InputGroup, Input, Icon, Text, Picker, Button } from 'native-base';
+import { Container, Content, List, ListItem, InputGroup, Input, Text, Picker, Button } from 'native-base';
+import {Icon} from 'react-native-elements'
 import {
   Platform,
   StyleSheet,
@@ -14,7 +15,7 @@ const Item = Picker.Item;
 export default class User extends Component {
   static navigationOptions = {
     tabBarIcon: ({tintColor}) => (
-    <Icon name='person' style={{color: tintColor}} />
+    <Icon name='account-circle' style={{color: tintColor}} />
     )
   };
   constructor(props) {

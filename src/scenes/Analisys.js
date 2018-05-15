@@ -3,12 +3,13 @@ import {StackNavigator, TabNavigator} from 'react-navigation';
 import {BottomNavigation, Toolbar, COLOR, ThemeProvider } from 'react-native-material-ui';
 import React, { Component } from 'react';
 import ActionButton from 'react-native-action-button';
-import { Container, Content, Card, CardItem, Thumbnail, Icon } from 'native-base';
-import CardComponent from '../CardComponent';
+import { Container, Content, Card, CardItem, Thumbnail, Body, Left, Right} from 'native-base';
 import Modal from 'react-native-modalbox'
 import ImagePicker from 'react-native-image-picker'
+import {Icon} from 'react-native-elements'
 import {
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
   Image,
@@ -18,29 +19,35 @@ import {
   Alert,
   Picker,
   Button,
-  PixelRatio
+  PixelRatio,
+  Animated
 } from 'react-native';
 
 export default class Analisys extends Component {
   constructor() {
     super();
-    this.state = {
-      isOpen: false,
-      isDisabled: false,
-    };
+      this.state = {  
+        ViewArray: [], 
+        Disable_Button: false,
+        isOpen: false,
+        isDisabled: false,
+      }
+    this.animatedValue = new Animated.Value(0);
+    this.Array_Value_Index = 1;
   }
 
   static navigationOptions = {
     tabBarIcon: ({tintColor}) => (
-    <Icon name='camera' style={{color: tintColor}} />
+    <Icon name='spa' style={{color: tintColor}} />
     )
   };
 
   state = {
-    avatarSource: null,
+    cardPhoto: null,
   };
-
-  selectPhotoTapped() {
+  
+  AddNewCard = () =>  {
+    this.refs.modal3.close();
     var options = {
       title: 'Selecione uma opção',
       takePhotoButtonTitle: 'Tirar Foto',
@@ -49,9 +56,9 @@ export default class Analisys extends Component {
       storageOptions: {
         skipBackup: true,
         path: 'images'
-      }
+      },
     };
-   
+
     ImagePicker.showImagePicker(options, (response) => {
       console.log('Response = ', response);
 
@@ -65,48 +72,132 @@ export default class Analisys extends Component {
         console.log('Usuário clicou em um botão customizado: ', response.customButton);
       }
       else {
-        let source = { uri: response.uri };
-
-        // You can also display the image using data:
-        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-
+        let source = { uri: 'data:image/jpeg;base64,' + response.data };
+        
         this.setState({
-          avatarSource: source
+          cardPhoto: source
+        });
+
+        this.animatedValue.setValue(0);
+        let AddNewCard = { Array_Value_Index: this.Array_Value_Index }
+        this.setState({ Disable_Button: true, ViewArray: [ ...this.state.ViewArray, AddNewCard, ]}, () =>
+        {
+          Animated.timing(
+              this.animatedValue,
+              {
+                toValue: 1,
+                duration: 400,
+                useNativeDriver: true
+              }
+          ).start(() =>
+          {
+            this.Array_Value_Index = this.Array_Value_Index + 1;
+            this.setState({ Disable_Button: false });
+          }); 
         });
       }
-    });
+    });                  
   }
 
-  onClose() {
-    console.log('Modal just closed');
-  }
 
-  onOpen() {
-    console.log('Modal just openned');
-  }
-
-  onClosingState(state) {
-    console.log('the open/close of the swipeToClose just changed');
-  }
+		render()
+		{
+				const AnimationValue = this.animatedValue.interpolate(
+				{
+						inputRange: [ 0, 1 ],
+						outputRange: [ -59, 0 ]
+				});
  
-  showOptions=()=>{
-      Alert.alert("Floating Button Clicked", 'teste');
-  }
-  
-  render() {
-    return (
-       <View style={styles.container}>
-        <Content>
-          <CardComponent imageSource="1"/>
-          <CardComponent imageSource="2"/>
-          <CardComponent imageSource="3"/>
-        </Content>
+				let Render_Animated_View = this.state.ViewArray.map(( item, key ) =>
+				{
+          this.analisysDate='Realizada em: '+new Date().getDate()+'/'+new Date().getMonth()+'/'+new Date().getFullYear();
+						if(( key ) == this.Array_Value_Index)
+						{
+								return(
+									<Animated.View 
+										key = { key } 
+										style = {[ styles.Animated_View_Style,
+										{ opacity: this.animatedValue, transform: [{ translateY: AnimationValue }] }]}>
+											<Card>
+												<CardItem>
+													<Left>
+														<Icon name='book'/>
+															<Body>
+																<Text>Analise {item.Array_Value_Index}</Text>
+																<Text note>{this.analisysDate}</Text>
+															</Body>
+													</Left>
+												</CardItem>
+
+												<CardItem cardBody>
+													<Image source={this.state.cardPhoto}
+														style={{height: 140, width: null, flex: 1 }}
+													/>
+												</CardItem>
+												<CardItem>
+													<Left>
+														<Icon name='insert-chart'/>
+														<Text> 80%</Text>
+													</Left>
+												</CardItem>
+											</Card>
+									</Animated.View>
+							);
+						}
+						else
+						{
+								return(
+										<View 
+											key = { key } 
+											style = { styles.Animated_View_Style }>
+ 											<Card>
+												<CardItem>
+													<Left>
+														<Icon name='book'/>
+															<Body>
+																<Text>Analise {item.Array_Value_Index}</Text>
+																<Text note>{this.analisysDate}</Text>
+															</Body>
+													</Left>
+												</CardItem>
+
+												<CardItem cardBody>
+													<Image source={this.state.cardPhoto}
+														style={{height: 140, width: null, flex: 1 }}
+													/>
+												</CardItem>
+												<CardItem>
+													<Left>
+														<Icon name='insert-chart'/>
+														<Text> 80%</Text>
+													</Left>
+												</CardItem>
+											</Card>
+										</View>
+								);
+						}
+        });
+        return(
+        <View style = { styles.MainContainer }>
+        <ScrollView>
+ 
+          <View style = {{ flex: 1, padding: 2 }}>
+          {
+              Render_Animated_View
+          }
+        </View>
+
+        </ScrollView>
+        
+
         <ActionButton 
           buttonColor="#00BCD4" 
-          renderIcon={() => <Icon name="ios-add" />} 
+          renderIcon={() => <Icon name="add" />} 
           onPress={() => this.refs.modal3.open()} />
 
-        <Modal style={[styles.modal, styles.modal3]} position={"center"} ref={"modal3"} isDisabled={this.state.isDisabled}>
+        <Modal style={[styles.modal, styles.modal3]}
+          position={"center"}
+          ref={"modal3"} isDisabled={this.state.isDisabled}>
           <View>
           <Text>
             Selecione a planta a ser classificada:
@@ -117,11 +208,13 @@ export default class Analisys extends Component {
               itemStyle={styles.itemStyle}>
               <Picker.Item label="Tomate" value="tomate" />
             </Picker>
-            <Button onPress={this.selectPhotoTapped.bind(this)} title="Confirmar">
+            <Button onPress={
+                this.AddNewCard
+                } title="Confirmar">
               <View style={[styles.avatar, styles.avatarContainer, {marginBottom: 20}]}>
               { 
-                this.state.avatarSource === null ? <Text>Tire uma foto</Text> :
-                <Image style={styles.avatar} source={this.state.avatarSource} />
+                this.state.cardPhoto === null ? <Text>Tire uma foto</Text> :
+                <Image style={styles.avatar} source={this.state.cardPhoto} />
               }
               </View>
             </Button>
@@ -133,6 +226,20 @@ export default class Analisys extends Component {
 }
 
 const styles = StyleSheet.create({
+  MainContainer:
+		{
+				flex: 1,
+				backgroundColor: '#eee',
+				justifyContent: 'center',
+				paddingTop: (Platform.OS == 'ios') ? 20 : 0
+		},
+ 
+		Animated_View_Style:
+		{
+			flex: 1, 
+			justifyContent: 'center',
+    },
+    
   avatar: {
     borderRadius: 75,
     width: 150,
@@ -140,7 +247,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor : '#F5F5F5'
+    backgroundColor : '#BDBDBD'
   },
   actionButtonIcon: {
     fontSize: 20,

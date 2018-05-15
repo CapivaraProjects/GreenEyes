@@ -2,7 +2,8 @@ import {StackNavigator} from 'react-navigation';
 import React, { Component } from 'react';
 import ImagePicker from 'react-native-image-picker';
 import {SearchBar} from 'react-native-elements';
-import { Container, Content, List, ListItem, Thumbnail, Text, Icon } from 'native-base';
+import { Container, Content, List, ListItem, Thumbnail, Text} from 'native-base';
+import {Icon} from 'react-native-elements'
 import {
   Platform,
   AppRegistry,
@@ -24,27 +25,54 @@ export default class Plants extends Component {
         <Container>
           <SearchBar
           lightTheme
-          round
+          showLoading
+          backgroundColor="#DCEDC8"
+          platform="android"
           searchIcon={{ size: 24 }}
           onChangeText={('algumacoisa')}
           onClear={('algumacoisa')}
           placeholder='Digite o nome da planta' />
-            <Content>
+            <Content style={styles.contentStyle}>
                 <List>
-                    <ListItem>
-                        <Thumbnail square size={80} source={require('../tomate.jpg')} />
-                        <Text>Tomatão X</Text>
-                        <Text note> Tomate bão e vermelho</Text>
+                    <ListItem button onPress={() => {('guest')}}>
+                        <Thumbnail source={require('../tomate.jpg')} />
+                        <Text> Tomatão Y</Text>
+                        <Text note>Tomate vermelho e saboroso</Text>
                     </ListItem>
-                    <ListItem>
-                        <Thumbnail square size={80} source={require('../tomate2.jpg')} />
-                        <Text>Tomatão Y</Text>
-                        <Text note> Tomate vermelho e saboroso</Text>
+                    <ListItem button onPress={() => {('guest')}}>
+                        <Thumbnail source={require('../tomate2.jpg')} />
+                        <Text> Tomatão Y</Text>
+                        <Text note>Tomate vermelho e saboroso</Text>
                     </ListItem>
-                    <ListItem>
-                        <Thumbnail square size={80} source={require('../tomate3.jpg')} />
-                        <Text>Tomatão W</Text>
-                        <Text note> Tomate pequeno</Text>
+                    <ListItem button onPress={() => {('guest')}}>
+                        <Thumbnail source={require('../tomate3.jpg')} />
+                        <Text> Tomatão Y</Text>
+                        <Text note>Tomate vermelho e saboroso</Text>
+                    </ListItem>
+                    <ListItem button onPress={() => {('guest')}}>
+                        <Thumbnail source={require('../tomate.jpg')} />
+                        <Text> Tomatão Y</Text>
+                        <Text note>Tomate vermelho e saboroso</Text>
+                    </ListItem>
+                    <ListItem button onPress={() => {('guest')}}>
+                        <Thumbnail source={require('../tomate3.jpg')} />
+                        <Text> Tomatão Y</Text>
+                        <Text note>Tomate vermelho e saboroso</Text>
+                    </ListItem>
+                    <ListItem button onPress={() => {('guest')}}>
+                        <Thumbnail source={require('../tomate2.jpg')} />
+                        <Text> Tomatão Y</Text>
+                        <Text note>Tomate vermelho e saboroso</Text>
+                    </ListItem>
+                    <ListItem button onPress={() => {('guest')}}>
+                        <Thumbnail source={require('../tomate3.jpg')} />
+                        <Text> Tomatão Y</Text>
+                        <Text note>Tomate vermelho e saboroso</Text>
+                    </ListItem>
+                    <ListItem button onPress={() => {('guest')}}>
+                        <Thumbnail source={require('../tomate3.jpg')} />
+                        <Text> Tomatão Y</Text>
+                        <Text note>Tomate vermelho e saboroso</Text>
                     </ListItem>
                 </List>
             </Content>
@@ -52,3 +80,9 @@ export default class Plants extends Component {
       );
     }
 }
+
+const styles = StyleSheet.create({
+    contentStyle:{
+        backgroundColor: "#ffffff"
+    }
+})

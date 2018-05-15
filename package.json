@@ -2,6 +2,7 @@
   "name": "GreenEyes",
   "version": "0.0.1",
   "private": true,
+  "homepage": "./",
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest"
@@ -18,6 +19,7 @@
     "react-native-material-design": "^0.3.7",
     "react-native-material-ui": "^1.22.2",
     "react-native-modalbox": "^1.4.2",
+    "react-native-sglistview": "^0.4.5",
     "react-native-swiper": "^1.5.13",
     "react-native-vector-icons": "^4.6.0",
     "react-navigation": "^1.5.11",

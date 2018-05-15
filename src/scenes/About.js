@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Icon} from 'native-base'
+import {Icon} from 'react-native-elements'
 import {Avatar} from 'react-native-elements'
 import { AppRegistry, 
   Text,
@@ -12,7 +12,7 @@ import { AppRegistry,
 export default class About extends Component {
   static navigationOptions = {
     tabBarIcon: ({tintColor}) => (
-    <Icon name='ios-information-circle-outline' style={{color: tintColor}} />
+    <Icon name='info' style={{color: tintColor}} />
     )
   };
   render() {
@@ -32,8 +32,8 @@ export default class About extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  container:{
+    backgroundColor: '#ffffff',
   },
   title:{
     alignSelf: 'center',

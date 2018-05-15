@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {StackNavigator} from 'react-navigation';
 import {TabNavigator} from 'react-navigation'
-import {Icon} from 'native-base'
+import {Icon, Button, Container, Content} from 'native-base'
 import { AppRegistry, 
   TextInput,
   Text,
@@ -15,7 +15,9 @@ import { AppRegistry,
 export default class Login extends Component {
   state = {
     username: 'teste',
-    password: 'teste'
+    usernameBD: null,
+    password: 'teste',
+    passwordBD: null
   }
   
   static navigationOptions =
@@ -58,7 +60,7 @@ export default class Login extends Component {
              <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
           <View style={styles.buttonGroup}>
-            <TouchableOpacity style={styles.buttonSignUp}
+            <Button style={styles.buttonSignUp}
                 color= "#ADFF2F"
                 onPress={() =>
                   {
@@ -66,7 +68,7 @@ export default class Login extends Component {
                   }
                 }>
                 <Text style={styles.buttonText}>Cadastre-se</Text>
-            </TouchableOpacity>
+            </Button>
             <TouchableOpacity style={styles.buttonPassRecovery}
                 color= "#ADFF2F"
                 onPress={() =>
@@ -84,30 +86,31 @@ export default class Login extends Component {
   
 
 auth(){
-    //autenticação apenas pra teste(já vai ser feita no GYResources)
-    if(this.state.username == null || this.state.password == null)
-    { 
+    if(this.state.username == null || this.state.password == null){ 
       Alert.alert(
-      'Ops !',
+      title='Ops!',
       'Preencha os campos corretamente!')
     }
-    else
-    {
-      (this.state.username == 'teste' && this.state.password == 'teste')
-      Alert.alert(
-        'AEE',
-        'PASSAMO PORRA'
-      )
-      const {username} = this.state;
-      const {password} = this.state;
-      //sjcl.encrypt('pass','salt')
-      
-      
-      // fetch('server adress', {
-      //   method: 'post',
-      // })
+    else{
+      //sjcl.encrypt('pass','salt')  
+      fetch('http://127.0.0.1:8888/api/gyresources/users/')
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.state.usernameBD = responseJson.username
+        this.state.passwordBD = responseJson.password
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      if(this.username == this.state.usernameBD || this.password == this.state.passwordBD)
+      {
+        Alert.alert(
+          title='Seja vem vindo !'
+        )
+        this.props.navigation.navigate('Main');
+      }
     }
-    } 
+  } 
 }
 
 const styles = StyleSheet.create({
@@ -149,7 +152,7 @@ const styles = StyleSheet.create({
   buttonSignUp: {
     backgroundColor: '#03A9F4',
     width:175,
-    paddingVertical: 15,
+    //paddingVertical: 15,
   },
 
   buttonPassRecovery:{

@@ -8,6 +8,7 @@ import { AppRegistry,
   StyleSheet, 
   Button,
   Linking,
+  Alert,
   TouchableOpacity} from 'react-native';
 
 export default class SignUp extends Component {
@@ -17,9 +18,10 @@ export default class SignUp extends Component {
   };
 
   state = {
-    username: '',
-    password: '',
-    email: ''
+    username: null,
+    password: null,
+    repassword: null,
+    email: null
   }
 
   render() {
@@ -47,35 +49,57 @@ export default class SignUp extends Component {
         <TextInput style={styles.input}
           secureTextEntry={true}
           placeholder="Senha"
+          onChangeText={(value) => this.setState({password: value})}
         />
 
         <TextInput style={styles.input}
           secureTextEntry={true}
-          placeholder="Redigite a senha"
-          onChangeText={(value) => this.setState({password: value})}
+          placeholder="Re-digite a senha"
+          onChangeText={(value) => this.setState({repassword: value})}
         />
 
         <TouchableOpacity style={styles.buttonContainer}
               color= "#ADFF2F"
-              onPress={() =>
-                {
-                    //
-                }
-              }>
-              <Text style={styles.buttonText}>Enviar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonContainer}
-              color= "#ADFF2F"
-              onPress={() =>
-                {
-                    this.props.navigation.navigate('Login');
-                }
-              }>
-              <Text style={styles.buttonText}>Já possui uma conta? Entre!</Text>
-          </TouchableOpacity>
-          </View>
+              onPress={() =>{this.createUser();}
+          }>
+          <Text style={styles.buttonText}>Enviar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonContainer}
+            color= "#ADFF2F"
+            onPress={() =>
+              {
+                  this.props.navigation.navigate('Login');
+              }
+            }>
+            <Text style={styles.buttonText}>Já possui uma conta? Entre!</Text>
+        </TouchableOpacity>
+        </View>
       </View>
     );
+  }
+
+  createUser(){
+    if(this.state.username != null & this.state.email != null){
+       if(this.state.password == this.state.repassword){
+      fetch('http://127.0.0.1:8888/api/gyresources/users/', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: this.state.email,
+          username: this.state.username,
+          password: this.state.password,
+        }),
+      }).catch((error) => {
+        console.error(error);
+      })
+      Alert.alert(
+        title='Legal!',
+        'Seu usuário foi criado!')
+      }    
+    }
   }
 }
 
