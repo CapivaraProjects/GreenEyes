@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
-import {StackNavigator} from 'react-navigation';
-import {TabNavigator} from 'react-navigation'
-import {Icon, Button, Container, Content} from 'native-base'
-import { AppRegistry, 
-  TextInput,
+import { TextInput,
   Text,
   Image,
   View, 
   StyleSheet,
   Alert,
-  Linking, 
   TouchableOpacity} from 'react-native';
+//import sjcl from 'sjcl';
 
 export default class Login extends Component {
   state = {
@@ -53,14 +49,14 @@ export default class Login extends Component {
               color= "#ADFF2F"
               onPress={() =>
                 {
-                    //this.auth();
-                    this.props.navigation.navigate('Main');
+                    this.auth();
+                    //this.props.navigation.navigate('Main');
                 }
               }>
              <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
           <View style={styles.buttonGroup}>
-            <Button style={styles.buttonSignUp}
+            <TouchableOpacity style={styles.buttonSignUp}
                 color= "#ADFF2F"
                 onPress={() =>
                   {
@@ -68,7 +64,7 @@ export default class Login extends Component {
                   }
                 }>
                 <Text style={styles.buttonText}>Cadastre-se</Text>
-            </Button>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.buttonPassRecovery}
                 color= "#ADFF2F"
                 onPress={() =>
@@ -86,29 +82,32 @@ export default class Login extends Component {
   
 
 auth(){
+  var Base64 = require('js-base64').Base64;
     if(this.state.username == null || this.state.password == null){ 
       Alert.alert(
       title='Ops!',
       'Preencha os campos corretamente!')
     }
     else{
-      //sjcl.encrypt('pass','salt')  
-      fetch('http://127.0.0.1:8888/api/gyresources/users/')
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.state.usernameBD = responseJson.username
-        this.state.passwordBD = responseJson.password
+      //aux = sjcl.encrypt(this.state.password,'salt');  
+      creds = Base64.encode(this.state.username+":"+aux)
+      fetch('http://10.0.2.2:5000/api/gyresources/token', {       
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic '+creds
+      },
       })
-      .catch((error) => {
-        console.error(error);
-      })
-      if(this.username == this.state.usernameBD || this.password == this.state.passwordBD)
-      {
-        Alert.alert(
-          title='Seja vem vindo !'
-        )
-        this.props.navigation.navigate('Main');
-      }
+        .then((response) => (response.text())
+          .then((text) =>{
+            Alert.alert(title='alo'+text)
+            this.props.navigation.navigate('Main');
+          })
+            .catch((error) => {
+            console.error(error);
+          })
+      )
     }
   } 
 }
@@ -152,7 +151,7 @@ const styles = StyleSheet.create({
   buttonSignUp: {
     backgroundColor: '#03A9F4',
     width:175,
-    //paddingVertical: 15,
+    paddingVertical: 15,
   },
 
   buttonPassRecovery:{

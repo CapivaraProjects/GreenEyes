@@ -81,20 +81,32 @@ export default class SignUp extends Component {
   createUser(){
     if(this.state.username != null & this.state.email != null){
        if(this.state.password == this.state.repassword){
-      fetch('http://127.0.0.1:8888/api/gyresources/users/', {
+        this.date='Realizada em: '+new Date().getDate()+'/'+new Date().getMonth()+'/'+new Date().getFullYear();
+      fetch('http://10.0.2.2:5000/api/gyresources/users/', {
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
+          Accept: 'application/json',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           email: this.state.email,
           username: this.state.username,
-          password: this.state.password,
+          password: this.state.password, 
+          salt: "SALT",
+          dateInsertion: 'Realizada em: '+new Date().getDate()+'/'+new Date().getMonth()+'/'+new Date().getFullYear(),
+          dateUpdate: 'Realizada em: '+new Date().getDate()+'/'+new Date().getMonth()+'/'+new Date().getFullYear(),
+          idType: 1
         }),
+      }).then((response) => {
+        Alert.alert(
+          title='Legal!',
+          'Realizada em: '+new Date().getDate()+'/'+new Date().getMonth()+'/'+new Date().getFullYear())
       }).catch((error) => {
-        console.error(error);
-      })
+            console.error(error);
+            Alert.alert(
+              title='Legal!',
+              error)
+      });
       Alert.alert(
         title='Legal!',
         'Seu usuário foi criado!')
@@ -102,6 +114,8 @@ export default class SignUp extends Component {
     }
   }
 }
+
+
 
 const styles = StyleSheet.create({
     container:{

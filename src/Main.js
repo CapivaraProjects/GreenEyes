@@ -1,13 +1,11 @@
-import { PropTypes } from 'prop-types';
-import {StackNavigator} from 'react-navigation';
 import {TabNavigator} from 'react-navigation'
-import {BottomNavigation, Toolbar, COLOR, ThemeProvider } from 'react-native-material-ui'
 import React, { Component } from 'react';
 import Plants from './scenes/Plants';
 import Howto from './scenes/Howto';
 import User from './scenes/User';
 import About from './scenes/About';
 import Analisys from './scenes/Analisys';
+import Results from './scenes/Results'
 import { Navigator, NativeModules } from 'react-native';
 import {
   Platform,
@@ -44,7 +42,7 @@ const AppTabNavigator = TabNavigator({
   },
   About:{
     screen: About,
-    }
+  },
   },
 {
   animationEnabled: true,

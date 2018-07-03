@@ -1,5 +1,6 @@
 import { PropTypes } from 'prop-types';
-import {StackNavigator, TabNavigator} from 'react-navigation';
+import {StackNavigator} from 'react-navigation';
+import {TabNavigator} from 'react-navigation'
 import {BottomNavigation, Toolbar, COLOR, ThemeProvider } from 'react-native-material-ui';
 import React, { Component } from 'react';
 import ActionButton from 'react-native-action-button';
@@ -22,6 +23,20 @@ import {
   PixelRatio,
   Animated
 } from 'react-native';
+import Results from './Results';
+
+export const navegacao = StackNavigator({
+  Results:{
+    screen: Results,
+    navigationOptions:{
+      title: 'Results',
+      tabBarIcon: ({tintColor}) => (
+        <Icon name='spa' style={{color: tintColor}} />
+      )
+    }
+  }
+});
+
 
 export default class Analisys extends Component {
   constructor() {
@@ -37,11 +52,13 @@ export default class Analisys extends Component {
   }
 
   static navigationOptions = {
+    title: 'Analisys',
     tabBarIcon: ({tintColor}) => (
     <Icon name='spa' style={{color: tintColor}} />
     )
-  };
+  }; 
 
+  
   state = {
     cardPhoto: null,
   };
@@ -77,7 +94,7 @@ export default class Analisys extends Component {
         this.setState({
           cardPhoto: source
         });
-
+        
         this.animatedValue.setValue(0);
         let AddNewCard = { Array_Value_Index: this.Array_Value_Index }
         this.setState({ Disable_Button: true, ViewArray: [ ...this.state.ViewArray, AddNewCard, ]}, () =>
@@ -102,6 +119,7 @@ export default class Analisys extends Component {
 
 		render()
 		{
+      const {navigate} = () => this.props.navigation;
 				const AnimationValue = this.animatedValue.interpolate(
 				{
 						inputRange: [ 0, 1 ],
@@ -129,7 +147,7 @@ export default class Analisys extends Component {
 													</Left>
 												</CardItem>
 
-												<CardItem cardBody>
+												<CardItem cardBody button onPress={() => {this.props.navigation.navigate('Results')}}>
 													<Image source={this.state.cardPhoto}
 														style={{height: 140, width: null, flex: 1 }}
 													/>
@@ -146,35 +164,38 @@ export default class Analisys extends Component {
 						}
 						else
 						{
-								return(
-										<View 
-											key = { key } 
-											style = { styles.Animated_View_Style }>
- 											<Card>
-												<CardItem>
-													<Left>
-														<Icon name='book'/>
-															<Body>
-																<Text>Analise {item.Array_Value_Index}</Text>
-																<Text note>{this.analisysDate}</Text>
-															</Body>
-													</Left>
-												</CardItem>
+              const {navigate} = () => this.props.navigation;
+							return(
+								<View 
+									key = { key } 
+									style = { styles.Animated_View_Style }>
+									<Card>
+										<CardItem>
+											<Left>
+												<Icon name='book'/>
+													<Body>
+														<Text>Analise {item.Array_Value_Index}</Text>
+														<Text note>{this.analisysDate}</Text>
+													</Body>
+											</Left>
+										</CardItem>
 
-												<CardItem cardBody>
-													<Image source={this.state.cardPhoto}
-														style={{height: 140, width: null, flex: 1 }}
-													/>
-												</CardItem>
-												<CardItem>
-													<Left>
-														<Icon name='insert-chart'/>
-														<Text> 80%</Text>
-													</Left>
-												</CardItem>
-											</Card>
-										</View>
-								);
+										<CardItem cardBody button onPress={() => {
+                      this.props.navigation.navigate('Results')
+                      }}>
+											<Image source={this.state.cardPhoto}
+												style={{height: 140, width: null, flex: 1 }}
+											/>
+										</CardItem>
+										<CardItem>
+											<Left>
+												<Icon name='insert-chart'/>
+												<Text> 80%</Text>
+											</Left>
+										</CardItem>
+									</Card>
+								</View>
+							);
 						}
         });
         return(
@@ -189,7 +210,6 @@ export default class Analisys extends Component {
 
         </ScrollView>
         
-
         <ActionButton 
           buttonColor="#00BCD4" 
           renderIcon={() => <Icon name="add" />} 
@@ -228,10 +248,10 @@ export default class Analisys extends Component {
 const styles = StyleSheet.create({
   MainContainer:
 		{
-				flex: 1,
-				backgroundColor: '#eee',
-				justifyContent: 'center',
-				paddingTop: (Platform.OS == 'ios') ? 20 : 0
+			flex: 1,
+			backgroundColor: '#eee',
+			justifyContent: 'center',
+			paddingTop: (Platform.OS == 'ios') ? 20 : 0
 		},
  
 		Animated_View_Style:

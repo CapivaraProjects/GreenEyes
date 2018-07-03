@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "@expo/vector-icons": "6.2.2",
+    "buffer": "^5.1.0",
+    "js-base64": "^2.4.5",
     "native-base": "^2.4.3",
     "react": "16.3.0-alpha.2",
     "react-native": "0.54.2",
@@ -20,6 +22,7 @@
     "react-native-material-ui": "^1.22.2",
     "react-native-modalbox": "^1.4.2",
     "react-native-sglistview": "^0.4.5",
+    "react-native-sqlite-storage": "^3.3.6",
     "react-native-swiper": "^1.5.13",
     "react-native-vector-icons": "^4.6.0",
     "react-navigation": "^1.5.11",
