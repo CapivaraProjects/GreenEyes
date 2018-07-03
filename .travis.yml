@@ -7,11 +7,7 @@ install: #1.2
 android: #1.3
   components:
   - build-tools-27.0.1
-<<<<<<< HEAD
-  - android-23
-=======
   - android-27
->>>>>>> a193a7f4471c03cd1254093c80b5c247a3ebaed9
   - extra-android-m2repository
   - extra-google-google_play_services
   - extra-google-m2repository
