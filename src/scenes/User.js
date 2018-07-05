@@ -1,10 +1,5 @@
-import { PropTypes } from 'prop-types';
-import {StackNavigator} from 'react-navigation';
-import {BottomNavigation, Toolbar, COLOR, ThemeProvider } from 'react-native-material-ui'
 import React, { Component } from 'react';
-import ActionButton from 'react-native-action-button';
 import Modal from 'react-native-modalbox'
-import { Navigator, NativeModules } from 'react-native';
 import { 
   Container, 
   Content, 
@@ -17,14 +12,13 @@ import {
   Button 
 } from 'native-base';
 import {
-  Platform,
   StyleSheet,
   View,
   Picker, 
   TextInput,
   TouchableOpacity
 } from 'react-native';
-import { ButtonGroup, Icon } from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 
 const Item = Picker.Item;
 export default class User extends Component {
@@ -217,7 +211,7 @@ render() {
                 </View>
             </Modal>
         </Container>
-    );}
+    );}             
 }
 
 

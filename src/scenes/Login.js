@@ -49,8 +49,8 @@ export default class Login extends Component {
               color= "#ADFF2F"
               onPress={() =>
                 {
-                    this.auth();
-                    //this.props.navigation.navigate('Main');
+                    //this.auth();
+                    this.props.navigation.navigate('Main');
                 }
               }>
              <Text style={styles.buttonText}>Login</Text>

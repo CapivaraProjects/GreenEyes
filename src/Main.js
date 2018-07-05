@@ -5,10 +5,7 @@ import Howto from './scenes/Howto';
 import User from './scenes/User';
 import About from './scenes/About';
 import Analisys from './scenes/Analisys';
-import Results from './scenes/Results'
-import { Navigator, NativeModules } from 'react-native';
 import {
-  Platform,
   StyleSheet,
   Text,
   View
