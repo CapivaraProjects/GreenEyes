@@ -3,11 +3,14 @@ package com.greeneyes;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.imagepicker.ImagePickerPackage;
+import org.reactnative.camera.RNCameraPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-
+import org.pgsqlite.SQLitePluginPackage;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,7 +25,11 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
-          new MainReactPackage()
+          new MainReactPackage(),
+            new SQLitePluginPackage(),
+            new VectorIconsPackage(),
+            new ImagePickerPackage(),
+            new RNCameraPackage()
       );
     }
 
