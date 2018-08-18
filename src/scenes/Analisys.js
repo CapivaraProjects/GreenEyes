@@ -1,10 +1,6 @@
-import { PropTypes } from 'prop-types';
-import {StackNavigator} from 'react-navigation';
-import {TabNavigator} from 'react-navigation'
-import {BottomNavigation, Toolbar, COLOR, ThemeProvider } from 'react-native-material-ui';
 import React, { Component } from 'react';
 import ActionButton from 'react-native-action-button';
-import { Container, Content, Card, CardItem, Thumbnail, Body, Left, Right} from 'native-base';
+import {Card, CardItem,Body, Left} from 'native-base';
 import Modal from 'react-native-modalbox'
 import ImagePicker from 'react-native-image-picker'
 import {Icon} from 'react-native-elements'
@@ -15,28 +11,11 @@ import {
   Text,
   Image,
   View,
-  Navigator,
-  NativeModules,
-  Alert,
   Picker,
   Button,
   PixelRatio,
   Animated
 } from 'react-native';
-import Results from './Results';
-
-export const navegacao = StackNavigator({
-  Results:{
-    screen: Results,
-    navigationOptions:{
-      title: 'Results',
-      tabBarIcon: ({tintColor}) => (
-        <Icon name='spa' style={{color: tintColor}} />
-      )
-    }
-  }
-});
-
 
 export default class Analisys extends Component {
   constructor() {
@@ -52,12 +31,8 @@ export default class Analisys extends Component {
   }
 
   static navigationOptions = {
-    title: 'Analisys',
-    tabBarIcon: ({tintColor}) => (
-    <Icon name='spa' style={{color: tintColor}} />
-    )
-  }; 
-
+    header: null,
+  };
   
   state = {
     cardPhoto: null,
@@ -89,7 +64,7 @@ export default class Analisys extends Component {
         console.log('Usuário clicou em um botão customizado: ', response.customButton);
       }
       else {
-        let source = { uri: 'data:image/jpeg;base64,' + response.data };
+        let source = 'data:image/png;base64,' + response.data
         
         this.setState({
           cardPhoto: source
@@ -119,7 +94,6 @@ export default class Analisys extends Component {
 
 		render()
 		{
-      const {navigate} = () => this.props.navigation;
 				const AnimationValue = this.animatedValue.interpolate(
 				{
 						inputRange: [ 0, 1 ],
@@ -146,8 +120,7 @@ export default class Analisys extends Component {
 															</Body>
 													</Left>
 												</CardItem>
-
-												<CardItem cardBody button onPress={() => {this.props.navigation.navigate('Results')}}>
+												<CardItem cardBody button onPress={() => {this.props.navigation.push('Resultado')}}>
 													<Image source={this.state.cardPhoto}
 														style={{height: 140, width: null, flex: 1 }}
 													/>
@@ -164,7 +137,6 @@ export default class Analisys extends Component {
 						}
 						else
 						{
-              const {navigate} = () => this.props.navigation;
 							return(
 								<View 
 									key = { key } 
@@ -174,14 +146,15 @@ export default class Analisys extends Component {
 											<Left>
 												<Icon name='book'/>
 													<Body>
-														<Text>Analise {item.Array_Value_Index}</Text>
+														<Text>Análise {item.Array_Value_Index}</Text>
 														<Text note>{this.analisysDate}</Text>
 													</Body>
 											</Left>
 										</CardItem>
 
 										<CardItem cardBody button onPress={() => {
-                      this.props.navigation.navigate('Results')
+                      sendImage();
+                      this.props.navigation.push('Resultado')
                       }}>
 											<Image source={this.state.cardPhoto}
 												style={{height: 140, width: null, flex: 1 }}
@@ -189,8 +162,8 @@ export default class Analisys extends Component {
 										</CardItem>
 										<CardItem>
 											<Left>
-												<Icon name='insert-chart'/>
-												<Text> 80%</Text>
+                          <Icon name='insert-chart'/>
+                          <Text> 80%</Text>
 											</Left>
 										</CardItem>
 									</Card>
@@ -201,7 +174,6 @@ export default class Analisys extends Component {
         return(
         <View style = { styles.MainContainer }>
         <ScrollView>
- 
           <View style = {{ flex: 1, padding: 2 }}>
           {
               Render_Animated_View
@@ -243,6 +215,29 @@ export default class Analisys extends Component {
       </View>
     );
   }
+}
+
+sendImage = () =>{
+  window.btoa = window.btoa || require('Base64').btoa;
+  const token = AsyncStorage.getItem("token");
+  fetch('http://10.0.2.2:888/api/gyresources/images/', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer '+ token
+        },
+        body: JSON.stringify({
+          url: 'test',
+          description: 'services',
+          source: btoa(this.state.cardPhoto),
+          size=1
+        }),
+      }).then((response) => {
+        console.log(response)
+      }).catch((error) => {
+        console.error(error);
+      });
 }
 
 const styles = StyleSheet.create({

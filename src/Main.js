@@ -4,11 +4,9 @@ import Plants from './scenes/Plants';
 import Howto from './scenes/Howto';
 import User from './scenes/User';
 import About from './scenes/About';
-import Analisys from './scenes/Analisys';
+import AnalisysController from './scenes/AnalisysController';
 import {
   StyleSheet,
-  Text,
-  View
 } from 'react-native';
 
 
@@ -27,46 +25,57 @@ export default class Main extends Component {
 const AppTabNavigator = TabNavigator({
   Howto:{
     screen: Howto,
+    navigationOptions:{
+      tabBarLabel: 'Ajuda'
+    }
   },
   Plants:{
     screen: Plants,
+    navigationOptions:{
+      tabBarLabel: 'Pesquisar'
+    }
   },
-  Analisys:{
-    screen: Analisys,
+  AnalisysController:{
+    screen: AnalisysController,
+    navigationOptions:{
+      tabBarLabel: 'Análises'
+    }
   },
   User:{
     screen: User,
+    navigationOptions:{
+      tabBarLabel: 'Usuário'
+    }
   },
   About:{
     screen: About,
+    navigationOptions:{
+      tabBarLabel: 'Sobre'
+    }
   },
   },
 {
   animationEnabled: true,
-  swipeEnabled: true,
+  swipeEnabled: false,
   tabBarPosition: "bottom",
   backgroundColor: "#8BC34A",
   tabBarOptions: {
     activeTintColor: "#212121",
     inactiveTintColor: "#DCEDC8",
+    labelStyle:{
+      fontSize:10
+    },
     style: {
-      backgroundColor: "#8BC34A"
+      backgroundColor: "#8BC34A",
+      height: 56
     },
     navigationOptions: {header: null,
       androidStatusBarColor:'#689F38'},
-    showLabel: false,
+    showLabel: true,
     showIcon: true
   },
   
 },
 );
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-});
 
 

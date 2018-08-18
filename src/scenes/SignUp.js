@@ -6,8 +6,6 @@ import { AppRegistry,
   Text,
   View, 
   StyleSheet, 
-  Button,
-  Linking,
   Alert,
   TouchableOpacity} from 'react-native';
 
@@ -21,7 +19,8 @@ export default class SignUp extends Component {
     username: null,
     password: null,
     repassword: null,
-    email: null
+    email: null,
+    salt: ''
   }
 
   render() {
@@ -60,7 +59,7 @@ export default class SignUp extends Component {
 
         <TouchableOpacity style={styles.buttonContainer}
               color= "#ADFF2F"
-              onPress={() =>{this.createUser();}
+              onPress={() =>{this.createUser()}
           }>
           <Text style={styles.buttonText}>Enviar</Text>
         </TouchableOpacity>
@@ -81,8 +80,7 @@ export default class SignUp extends Component {
   createUser(){
     if(this.state.username != null & this.state.email != null){
        if(this.state.password == this.state.repassword){
-        this.date='Realizada em: '+new Date().getDate()+'/'+new Date().getMonth()+'/'+new Date().getFullYear();
-      fetch('http://10.0.2.2:5000/api/gyresources/users/', {
+        fetch('http://10.0.2.2:8888/api/gyresources/users/', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -92,25 +90,33 @@ export default class SignUp extends Component {
           email: this.state.email,
           username: this.state.username,
           password: this.state.password, 
-          salt: "SALT",
+          salt: 'SALT',
           dateInsertion: 'Realizada em: '+new Date().getDate()+'/'+new Date().getMonth()+'/'+new Date().getFullYear(),
           dateUpdate: 'Realizada em: '+new Date().getDate()+'/'+new Date().getMonth()+'/'+new Date().getFullYear(),
           idType: 1
         }),
       }).then((response) => {
-        Alert.alert(
+        if(response.status_code == 200){
+          Keyboard.dismiss();
+          Alert.alert(
           title='Legal!',
-          'Realizada em: '+new Date().getDate()+'/'+new Date().getMonth()+'/'+new Date().getFullYear())
+          'Aleluia irmaos.')
+          this.props.navigation.navigate('Login');
+        }
+        Alert.alert(
+          title='Opa!',
+          'Não foi não'+response.message)
       }).catch((error) => {
             console.error(error);
             Alert.alert(
               title='Legal!',
               error)
       });
+    } else{
       Alert.alert(
-        title='Legal!',
-        'Seu usuário foi criado!')
-      }    
+        title='Opa!',
+        'Senhas divergentes!') 
+      }
     }
   }
 }

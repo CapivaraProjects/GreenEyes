@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Card, CardItem, Body, Left,} from 'native-base';
 import {Icon} from 'react-native-elements'
+import ActionButton from 'react-native-action-button';
 import {
 	Platform,
 	ScrollView,
@@ -9,7 +10,8 @@ import {
 	Image,
 	View,
 	PixelRatio,
-	Animated
+	Animated,
+	AsyncStorage
 } from 'react-native';
  
 export default class Results extends Component
@@ -17,99 +19,85 @@ export default class Results extends Component
 	constructor() {
     super();
       this.state = {  
-        ViewArray: [], 
+				index: 0,
+				results: [
+					{
+						"scientificName": "NOME_CIENTIFICO1",
+						"popularName": "NOME_POPULAR1",
+						"precision": "82%",
+						"image": "imagem"
+					},
+					{
+						"scientificName": "NOME_CIENTIFICO2",
+						"popularName": "NOME_POPULAR2",
+						"precision": "31,4%",
+						"image": "imagem2"
+					},
+					{
+						"scientificName": "NOME_CIENTIFICO3",
+						"popularName": "NOME_POPULAR3",
+						"precision": "9%",
+						"image": "imagem3"
+					}
+				],
         Disable_Button: false,
         isOpen: false,
         isDisabled: false,
       }
     this.animatedValue = new Animated.Value(0);
-    this.Array_Value_Index = 1;
-  }
+		this.Array_Value_Index = 1;
+	}
+	
 	static navigationOptions = {
-		title: 'Results',
-		tabBarIcon: ({tintColor}) => (
-			<Icon name='spa' style={{color: tintColor}} />
-		),
+    header: null,
 	};
+	
+	saveData(){
+		analise = this.popularName, this.scientificName, this.precision, this.photo;
+		AsyncStorage.setItem('analise', analise);
+	}
+
+	getData(){
+		AsyncStorage.getItem('analise',this.props.analise.id);
+	}
 
 	render(){
-		return(
-		<View style = { styles.MainContainer }>
-        <ScrollView>
-        	<View style = {{ flex: 1, padding: 2 }}>
-						<Card>
-							<CardItem>
-								<Left>
-									<Icon name='book'/>
-										<Body>
-											<Text>Doença detectada: Nome X</Text>
-											<Text note>Nome científico da doença</Text>
-										</Body>
-								</Left>
-							</CardItem>
-
-							<CardItem cardBody button onPress={() => {('guest')}}>
-								<Image source={require('../doenca1.jpeg')}
-									style={{height: 110, width: null, flex: 1 }}
-								/>
-							</CardItem>
-							<CardItem>
-								<Left>
-									<Icon name='insert-chart'/>
-									<Text> 82,5%</Text>
-								</Left>
-							</CardItem>
-						</Card>
-						<Card>
-							<CardItem>
-								<Left>
-									<Icon name='book'/>
-										<Body>
-											<Text>Doença detectada: Nome Y</Text>
-											<Text note>Nome científico da doença</Text>
-										</Body>
-								</Left>
-							</CardItem>
-
-							<CardItem cardBody button onPress={() => {('guest')}}>
-								<Image source={require('../doenca2.jpeg')}
-									style={{height: 110, width: null, flex: 1 }}
-								/>
-							</CardItem>
-							<CardItem>
-								<Left>
-									<Icon name='insert-chart'/>
-									<Text> 31,9%</Text>
-								</Left>
-							</CardItem>
-						</Card>  
-						<Card>
-							<CardItem>
-								<Left>
-									<Icon name='book'/>
-										<Body>
-											<Text>Doença detectada: Nome W</Text>
-											<Text note>Nome científico da doença</Text>
-										</Body>
-								</Left>
-							</CardItem>
-
-							<CardItem cardBody button onPress={() => {('guest')}}>
-								<Image source={require('../doenca2.jpeg')}
-									style={{height: 110, width: null, flex: 1 }}
-								/>
-							</CardItem>
-							<CardItem>
-								<Left>
-									<Icon name='insert-chart'/>
-									<Text> 11,6%</Text>
-								</Left>
-							</CardItem>
-						</Card>          
-        	</View>
-        </ScrollView>
-      </View>
-		);	
+		this.state.results.map((item, index) => {
+			return(
+			<View >
+					<ScrollView>
+						<View style = {{ flex: 1, padding: 2 }}>
+							<Card key={results.index}>
+								<CardItem>
+									<Left>
+										<Icon name='book'/>
+											<Body>
+												<Text>Doença detectada: {item.popularName}</Text>
+												<Text note>Nome científico: {item.scientificName}</Text>
+											</Body>
+									</Left>
+								</CardItem>
+								<CardItem cardBody button onPress={() => {('guest')}}>
+									<Image source={require('../doenca1.jpeg') }
+										style={{height: 110, width: null, flex: 1 }}
+									/>
+								</CardItem>
+								<CardItem>
+									<Left>
+										<Icon name='insert-chart'/>
+										<Text>Porcentagem de precisão: {item.precision}</Text>
+									</Left>
+								</CardItem>
+							</Card>
+						</View>
+					</ScrollView>
+					<ActionButton 
+						buttonColor="#00BCD4" 
+						renderIcon={() => <Icon name="arrow-back" />} 
+						onPress={() => this.props.navigation.goBack()} />
+				</View>
+			);
+		});
 	}
 }
 

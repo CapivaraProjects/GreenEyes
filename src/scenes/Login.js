@@ -9,6 +9,7 @@ import { TextInput,
 //import sjcl from 'sjcl';
 
 export default class Login extends Component {
+  
   state = {
     username: 'teste',
     usernameBD: null,
@@ -49,8 +50,9 @@ export default class Login extends Component {
               color= "#ADFF2F"
               onPress={() =>
                 {
-                    //this.auth();
-                    this.props.navigation.navigate('Main');
+                    this.auth();
+                    //uncomment this to navigate to Main screen
+                    //this.props.navigation.navigate('Main');
                 }
               }>
              <Text style={styles.buttonText}>Login</Text>
@@ -82,32 +84,34 @@ export default class Login extends Component {
   
 
 auth(){
-  var Base64 = require('js-base64').Base64;
     if(this.state.username == null || this.state.password == null){ 
       Alert.alert(
       title='Ops!',
       'Preencha os campos corretamente!')
     }
-    else{
-      //aux = sjcl.encrypt(this.state.password,'salt');  
-      creds = Base64.encode(this.state.username+":"+aux)
-      fetch('http://10.0.2.2:5000/api/gyresources/token', {       
+    else{  
+      window.btoa = window.btoa || require('Base64').btoa;
+      creds = btoa(this.state.username+":"+this.state.password);
+      Alert.alert(
+        title="SHOW",
+          "Mensage: "+creds)
+      fetch('http://10.0.2.2:8888/api/gyresources/token/', {       
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'Authorization': 'Basic '+creds
       },
+    }).then((response) => {
+        if(response.status_code == 200){
+          Keyboard.dismiss();
+          AsyncStorage.setItem("token", response.message);
+          this.props.navigation.navigate('Main');
+        }
       })
-        .then((response) => (response.text())
-          .then((text) =>{
-            Alert.alert(title='alo'+text)
-            this.props.navigation.navigate('Main');
-          })
-            .catch((error) => {
-            console.error(error);
-          })
-      )
+      .catch((error) => {
+        console.error(error);
+      })
     }
   } 
 }

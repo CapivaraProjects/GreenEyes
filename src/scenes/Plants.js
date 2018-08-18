@@ -1,74 +1,70 @@
 import React, { Component } from 'react';
-import {SearchBar} from 'react-native-elements';
-import { Container, Content, List, ListItem, Thumbnail, Text} from 'native-base';
+import { Container, Content, } from 'native-base';
 import {Icon} from 'react-native-elements'
-import { StyleSheet} from 'react-native';
-
+import { StyleSheet, Keyboard} from 'react-native';
+import SearchHeader from './SearchHeader';
+import SearchBody from './SearchBody';
 
 export default class Plants extends Component {
   static navigationOptions = {
     tabBarIcon: ({tintColor}) => (
     <Icon name='search' style={{color: tintColor}} />
-    )
-  };    
+    ),
+  }; 
+  
+  state = {
+      searchPlant: '',
+      plant:{},
+      plantFound: false
+  }
+
+  plantSearch = () => {
+    Keyboard.dismiss()
+    const plantCommomName = this.state.searchPlant.toLowerCase();
+    const data = [{
+        "action":"search",
+        "scientificName": "Malus Domestica",
+        "commonName": plantCommomName,
+    }]
+    fetch('http://10.0.2.2:8888/api/gyresources/plants/?action=search&id=1&scientificName=Malus%20Domestica&commonName='+this.state.plantCommomName+'&pageSize=10&offset=10',{
+        headers: {
+            Accept: 'application/json'
+        },
+    }).then((responseJson) => {
+            this.setState({
+                plant: responseJson.message,
+                plantFound: true
+            }) 
+            this.renderPage;
+        })
+      .catch((error) => {
+            console.error(error);
+            if(responseJson.status_code != 200)
+                this.setState({plantFound: false});
+      });
+  }
+//first we have to bring the list with the result(s)
+//after all inside of item of the list we can add a StackNavigator to bring the information of the plant
+  renderPage = () => {
+      if(this.state.plantFound){
+          return <SearchBody plantData={'Apple'}/>
+      }
+      else{
+          console.log("Planta não encontrada")
+      }
+  }
 
   render() {
       return (
         <Container>
-          <SearchBar
-          lightTheme
-          showLoading
-          backgroundColor="#DCEDC8"
-          platform="android"
-          searchIcon={{ size: 24 }}
-          onChangeText={() => ('guest')}
-          onClear={() => ('guest')}
-          placeholder='Digite o nome da planta' />
-            <Content style={styles.contentStyle}>
-                <List>
-                    <ListItem button onPress={() => {('guest')}}>
-                        <Thumbnail source={require('../tomate.jpg')} />
-                        <Text> Tomate X</Text>
-                        <Text note> Tomate saboroso</Text>
-                    </ListItem>
-                    <ListItem button onPress={() => {('guest')}}>
-                        <Thumbnail source={require('../tomate2.jpg')} />
-                        <Text> Tomate Y</Text>
-                        <Text note> Tomate vermelho e escuro</Text>
-                    </ListItem>
-                    <ListItem button onPress={() => {('guest')}}>
-                        <Thumbnail source={require('../tomate3.jpg')} />
-                        <Text> Tomate W</Text>
-                        <Text note> Tomate pequeno (cereja)</Text>
-                    </ListItem>
-                    <ListItem button onPress={() => {('guest')}}>
-                        <Thumbnail source={require('../tomate.jpg')} />
-                        <Text> Tomate M</Text>
-                        <Text note> Tomate verde </Text>
-                    </ListItem>
-                    <ListItem button onPress={() => {('guest')}}>
-                        <Thumbnail source={require('../tomate3.jpg')} />
-                        <Text> Tomate Y</Text>
-                        <Text note> Tomate vermelho e saboroso</Text>
-                    </ListItem>
-                    <ListItem button onPress={() => {('guest')}}>
-                        <Thumbnail source={require('../tomate2.jpg')} />
-                        <Text> Tomate Y</Text>
-                        <Text note> Só tomate</Text>
-                    </ListItem>
-                    <ListItem button onPress={() => {('guest')}}>
-                        <Thumbnail source={require('../tomate3.jpg')} />
-                        <Text> Tomate Y</Text>
-                        <Text note> Tomate muito vermelho</Text>
-                    </ListItem>
-                    <ListItem button onPress={() => {('guest')}}>
-                        <Thumbnail source={require('../tomate3.jpg')} />
-                        <Text> Tomatão Y</Text>
-                        <Text note> Tomate vermelho e saboroso</Text>
-                    </ListItem>
-                </List>
-            </Content>
+            <SearchHeader
+                value={this.state.searchPlant}
+                onChangeText={(searchPlant) => this.setState({searchPlant})}
+                plantSearch={this.plantSearch}
+            />
+            {this.renderPage()}
         </Container>
+        
       );
     }
 }
