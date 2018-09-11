@@ -1,306 +1,297 @@
 import React, { Component } from 'react';
 import Modal from 'react-native-modalbox'
-import { 
-	Container, 
-	Content, 
-	List, 
-	ListItem, 
-	Right, 
-	InputGroup, 
-	Input,  
+import {
+	Container,
+	Content,
+	List,
+	ListItem,
+	Right,
+	InputGroup,
+	Input,
 	Text,
-	Button 
+	Button,
 } from 'native-base';
 import {
 	StyleSheet,
 	View,
-	Picker, 
+	Picker,
 	TextInput,
-	TouchableOpacity
+	TouchableOpacity,
+	AsyncStorage, Alert
 } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { Icon, Avatar } from 'react-native-elements';
+import img from '../thumbnails/user_icon.png'
 
 const Item = Picker.Item;
 export default class User extends Component {
 	static navigationOptions = {
-		tabBarIcon: ({tintColor}) => (
-		<Icon name='person' style={{color: tintColor}} />
+		tabBarIcon: ({ tintColor }) => (
+			<Icon name='person' style={{ color: tintColor }} />
 		)
 	};
 	constructor(props) {
 		super(props);
 		this.state = {
-				selectedItem: undefined,
-				selected1: 'key0',
-				results: {
-						items: [],
-				},
+			username: '',
+			userEmail: '',
+			userLanguage: '',
+			userPassword: '',
+			selectedItem: undefined,
+			selected1: 'key0',
+			results: {
+				items: [],
+			},
 		};
-}
+	}
 
-userData(){
-		var userApp = {
-				id: "",
-				email: "",
-				username: "",
-				password: "",
-				token: ""        
-		}
-		fetch('http://10.0.2.2:5000/api/gyresources/users/', {
-				method: 'POST',
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
-					'Authorization': 'Basic '+userApp.token
-				},
-				body: JSON.stringify({
-						"action": "searchByID",
-						"id": userApp.id
-				}),
-			}).then((response) => {
-				console.response(response);
-				userApp.id = response.user.id;
-				userApp.email = response.user.email;
-				userApp = response.user.username;
-				userApp = response.user.password;
-			}).catch((error) => {
-				console.error(error);
-			});
-		
-}
-
-onValueChange(value=string) {
+	onValueChange(value = string) {
 		this.setState({
-				selected1: value,
+			selected1: value,
 		});
-}
+	}
 
-onClose() {
+	onClose() {
 		console.log('Modal just closed');
-}
+	}
 
-onOpen() {
+	onOpen() {
 		console.log('Modal just openned');
-}
+	}
 
-onClosingState(state) {
+	onClosingState(state) {
 		console.log('the open/close of the swipeToClose just changed');
-}
- 
-showOptions=()=>{
+	}
+
+	showOptions = () => {
 		Alert.alert("Floating Button Clicked", 'teste');
-}
+	}
 
-render() {
+	render() {
 		return (
-				<Container>
-						<Content>
-								<List>
-										<ListItem>
-												<InputGroup>
-														<Icon name="person" style={styles.iconStyle} />
-														<Input placeholder="Hugo.Yoshimura" />
-												</InputGroup>
-										</ListItem>
-										<ListItem>
-												<InputGroup>
-														<Icon name="email" style={styles.iconStyle} />
-														<Input placeholder="hugomasayoshi@gmail.com" />
-												</InputGroup>
-										</ListItem>
-										<ListItem>
-												<InputGroup>
-														<Icon name="language" style={styles.iconStyle} />
-														<View style={styles.languageContainer}>
-																<View>
-																		<Text>Português</Text>
-																</View>
-																<Right>
-																		<TouchableOpacity
-																				onPress={() => this.refs.modal3.open()}>
-																				<Text style={styles.languageButtonText}>Selecionar</Text>
-																		</TouchableOpacity>
-																</Right>
-														</View>
-												</InputGroup>
-										</ListItem>
-										
-								</List>
-								<Button style={{ alignSelf: 'center', marginTop: 20, marginBottom: 20, backgroundColor: "#03A9F4"}}
-										onPress={() => this.refs.modalPassword.open()}>
-										<Text>Alterar Senha</Text>
-								</Button>
-						</Content>
-						<Modal 
-								style={[styles.modal, styles.modal3]} 
-								position={"center"} 
-								ref={"modal3"} 
-								isDisabled={this.state.isDisabled}>
-								
-								<View>
-										<Text>
-												Selecione um idioma:
-										</Text>
-										<Picker
-												style={styles.picker}
-												mode="dropdown"
-												itemStyle={styles.itemStyle}>
-												<Picker.Item label="Português" value="pt" />
-												<Picker.Item label="English" value="en"/>
-												<Picker.Item label="Espanhol" value="es"/>
-										</Picker>
-								</View>
-						</Modal>
-						<Modal 
-								style={[styles.modal, styles.modal3]} 
-								position={"center"} 
-								ref={"modalPassword"} 
-								isDisabled={this.state.isDisabled}>
-								
-								<View style={styles.blockStyleOld}>
-										<Text style={styles.inputLabel}>
-												Alteração de senha
-										</Text>
-										<TextInput
-												style={styles.input}
-												secureTextEntry={true}
-												placeholder="Senha Atual"
-												onChangeText={(value) => this.setState({newPassword: value})}
-										/>
-								</View>
-								<View style={styles.blockStyleButton}>
-										<Button style={styles.buttonStyle}
-												onPress={() => this.refs.modalNewPassword.open()}>
-												<Text>Confirmar</Text>
-										</Button>
+			<Container>
+				<Content style={styles.container}>
+					<Avatar
+						containerStyle={{ flex: 1, alignSelf: 'center', marginTop: 10}}
+						xlarge
+						rounded
+						source={img}
+						activeOpacity={0}>
+					</Avatar>
+					<List style={{marginTop: 10}}>
+						<ListItem>
+							<InputGroup>
+								<Icon name="person" style={styles.iconStyle} />
+								<Text>Hugo.Yoshimura</Text>
+							</InputGroup>
+						</ListItem>
+						<ListItem>
+							<InputGroup>
+								<Icon name="email" style={styles.iconStyle} />
+								<Input placeholder="hugomasayoshi@gmail.com" />
+							</InputGroup>
+						</ListItem>
+						<ListItem>
+							<InputGroup>
+								<Icon name="language" style={styles.iconStyle} />
+								<View style={styles.languageContainer}>
+									<View>
+										<Text>Português</Text>
+									</View>
+									<Right>
 										<TouchableOpacity
-												onPress={() => this.refs.modalForgotten.open()}>
-												<Text style={styles.languageButtonText}>Esqueci minha senha</Text>
+											onPress={() => this.refs.modal3.open()}>
+											<Text style={styles.languageButtonText}>Selecionar</Text>
 										</TouchableOpacity>
+									</Right>
 								</View>
-						</Modal>
-						<Modal 
-								style={[styles.modal, styles.modal3]} 
-								position={"center"} 
-								ref={"modalNewPassword"} 
-								isDisabled={this.state.isDisabled}>
-								
-								<View style={styles.blockStyleNew}>
-										<Text style={styles.inputLabel}>
-												Nova senha
+							</InputGroup>
+						</ListItem>
+
+					</List>
+					<Button style={{ alignSelf: 'center', marginTop: 20, marginBottom: 20, backgroundColor: "#03A9F4" }}
+						onPress={() => this.refs.modalPassword.open()}>
+						<Text>Alterar Senha</Text>
+					</Button>
+				</Content>
+				<Modal
+					style={[styles.modal, styles.modal3]}
+					position={"center"}
+					ref={"modal3"}
+					isDisabled={this.state.isDisabled}>
+
+					<View>
+						<Text>
+							Selecione um idioma:
 										</Text>
-										<TextInput
-												style={styles.input}
-												secureTextEntry={true}
-												placeholder="Nova Senha"
-												onChangeText={(value) => this.setState({checkNewPassword: value})}
-										/>
-										<Text style={styles.inputLabel}>
-												Insira novamente a senha nova
+						<Picker
+							style={styles.picker}
+							mode="dropdown"
+							itemStyle={styles.itemStyle}>
+							<Picker.Item label="Português" value="pt" />
+							<Picker.Item label="English" value="en" />
+							<Picker.Item label="Espanhol" value="es" />
+						</Picker>
+					</View>
+				</Modal>
+				<Modal
+					style={[styles.modal, styles.modal3]}
+					position={"center"}
+					ref={"modalPassword"}
+					isDisabled={this.state.isDisabled}>
+
+					<View style={styles.blockStyleOld}>
+						<Text style={styles.inputLabel}>
+							Alteração de senha
 										</Text>
-										<TextInput
-												style={styles.input}
-												secureTextEntry={true}
-												placeholder="Insira novamente a senha nova"
-												onChangeText={(value) => this.setState({password: value})}
-										/>
-										<Button style={styles.buttonStyle}
-												color= "#ADFF2F"
-												onPress={() =>
-														{
-																alert("Senha alterada com sucesso!");
-																this.refs.modalNewPassword.close();
-																this.refs.modalPassword.close();
-														}
-												}>
-												<Text style={styles.buttonText}>Confirmar</Text>
-										</Button>
-								</View>
-						</Modal>
-						<Modal 
-								style={[styles.modal, styles.modal3]} 
-								position={"center"} 
-								ref={"modalForgotten"} 
-								isDisabled={this.state.isDisabled}>
-								
-								<View style={styles.blockStyleNew}>
-										<TextInput style={styles.input}
-												placeholder="E-mail"
-												onChangeText={(value) => this.setState({email: value})}
-										/>
-										<Button style={styles.buttonStyle}
-												color= "#ADFF2F"
-												onPress={() =>
-														{
-																this.sendEmail();
-																this.refs.modalForgotten.close();
-																this.refs.modalPassword.close();
-														}
-												}>
-												<Text style={styles.buttonText}>Enviar</Text>
-										</Button>
-								</View>
-						</Modal>
-				</Container>
-		);}
+						<TextInput
+							style={styles.input}
+							secureTextEntry={true}
+							placeholder="Senha Atual"
+							onChangeText={(value) => this.setState({ userPassword: value })}
+						/>
+					</View>
+					<View style={styles.blockStyleButton}>
+						<Button style={styles.buttonStyle}
+							onPress={() => {
+								this.refs.modalNewPassword.open()
+							}}>
+							<Text>Confirmar</Text>
+						</Button>
+						<TouchableOpacity
+							onPress={() => this.refs.modalForgotten.open()}>
+							<Text style={styles.languageButtonText}>Esqueci minha senha</Text>
+						</TouchableOpacity>
+					</View>
+				</Modal>
+				<Modal
+					style={[styles.modal, styles.modal3]}
+					position={"center"}
+					ref={"modalNewPassword"}
+					isDisabled={this.state.isDisabled}>
 
-		updateUser(username, email, password){
-				userDict = {
-						id: user.id,
-						idType: user.idType,
-						email: email,
-						username:username,
-						password:password,
-						salt:crypto.generateRandomSalt(),
-						dateInsertion:user.dateInsertion,
-						dateUpdate:user.dateUpdate};
-				var string = ""+userDict.id+userDict.idType+userDict.email+userDict.username+
-				userDict.password+userDict.salt+userDict.dateInsertion+userDict.dateUpdate;
+					<View style={styles.blockStyleNew}>
+						<Text style={styles.inputLabel}>
+							Nova senha
+										</Text>
+						<TextInput
+							style={styles.input}
+							secureTextEntry={true}
+							placeholder="Nova Senha"
+							onChangeText={(value) => this.setState({ checkNewPassword: value })}
+						/>
+						<Text style={styles.inputLabel}>
+							Insira novamente a senha nova
+										</Text>
+						<TextInput
+							style={styles.input}
+							secureTextEntry={true}
+							placeholder="Insira novamente a senha nova"
+							onChangeText={(value) => this.setState({ password: value })}
+						/>
+						<Button style={styles.buttonStyle}
+							color="#ADFF2F"
+							onPress={() => {
+								alert("Senha alterada com sucesso!");
+								this.refs.modalNewPassword.close();
+								this.refs.modalPassword.close();
+								this.updateUser();
+							}
+							}>
+							<Text style={styles.buttonText}>Confirmar</Text>
+						</Button>
+					</View>
+				</Modal>
+				<Modal
+					style={[styles.modal, styles.modal3]}
+					position={"center"}
+					ref={"modalForgotten"}
+					isDisabled={this.state.isDisabled}>
 
-				fetch('http://10.0.2.2:5000/api/gyresources/users/', {
-				method: 'POST',
+					<View style={styles.blockStyleNew}>
+						<TextInput style={styles.input}
+							placeholder="E-mail"
+							onChangeText={(value) => this.setState({ email: value })}
+						/>
+						<Button style={styles.buttonStyle}
+							color="#ADFF2F"
+							onPress={() => {
+								this.sendEmail();
+								this.refs.modalForgotten.close();
+								this.refs.modalPassword.close();
+							}
+							}>
+							<Text style={styles.buttonText}>Enviar</Text>
+						</Button>
+					</View>
+				</Modal>
+			</Container>
+		);
+	}
+
+	updateUser() {
+		var userInfo = AsyncStorage.getItem("userInfo")
+		Alert.alert(title = "olha", 'userinfo' + userInfo)
+		AsyncStorage.getItem("token").then((token) => {
+			fetch('http://10.0.2.2:5000/api/gyresources/users/', {
+				method: 'PUT',
 				headers: {
-					Accept: 'application/json',
+					'Accept': 'application/json',
 					'Content-Type': 'application/json',
-					'Authorization': 'Basic '+userApp.token
-				},
-				body: JSON.stringify({string}),
-			}).then((response) => {
-				console.response(response);
-			}).catch((error) => {
-				console.error(error);
-				});
-		}
-
-		sendEmail(){
-				fetch('http://10.0.2.2:5000/api/gyresources/messageservice/', {
-				method: 'POST',
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + token
 				},
 				body: JSON.stringify({
-					userEmail: this.state.email,
-					coreVerification: this.state.generatedCode,
+					id: 11,
+					idType: 1,
+					email: "foda@foda.com",
+					username: "a",
+					password: "b",
+					salt: "salt",
+					dateInsertion: "string",
+					dateUpdate: "23/08/18"
 				}),
-			}).then((response) => {
-				Alert.alert(
-					title='Feito!',
-					'Siga as instruções no e-mail que enviamos a você!')
-			}).catch((error) => {
-						console.error(error);
+			}).then(response => response.json())
+				.then(response => {
+					Alert.alert(title = 'foi', 'seliga' + response.message)
+					console.log(response);
+				}).catch(error => {
+					console.log(error);
+					Alert.alert(
+						title = 'Erro!',
+						JSON.stringify(error))
+					Alert.alert(title = 'foda', 'token ' + aux.token)
 				});
-		}
+		});
+
+
+	}
+
+	sendEmail() {
+		fetch('http://10.0.2.2:5000/api/gyresources/messageservice/', {
+			method: 'POST',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				userEmail: this.state.email,
+				coreVerification: this.state.generatedCode,
+			}),
+		}).then((response) => {
+			Alert.alert(
+				title = 'Feito!',
+				'Siga as instruções no e-mail que enviamos a você!')
+		}).catch((error) => {
+			console.error(error);
+		});
+	}
 }
 
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		alignItems: 'center',
-		justifyContent: 'center'
-	}, 
-	
+		backgroundColor: '#FFF',
+	},
+
 	buttonLanguage: {
 		paddingVertical: 5,
 		marginBottom: 5
@@ -327,14 +318,14 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 
 	},
-	
+
 	languageContainer: {
 		flexDirection: 'row',
 		flex: 1
 	},
-	
+
 	iconStyle: {
-			color: '#212121',
+		color: '#212121',
 	},
 
 	languageButtonText: {
@@ -353,14 +344,14 @@ const styles = StyleSheet.create({
 
 	blockStyleOld: {
 		height: 75,
-		width: 250,  
+		width: 250,
 		alignItems: 'center',
 		//backgroundColor: "#8BC34A"
 	},
 
 	blockStyleNew: {
 		height: 150,
-		width: 250,  
+		width: 250,
 		alignItems: 'center',
 		//backgroundColor: "#8BC34A"
 	},
@@ -372,10 +363,10 @@ const styles = StyleSheet.create({
 		//backgroundColor: "#8BC34A"
 	},
 
-	buttonStyle: { 
-		alignSelf: 'center', 
-		marginTop: 20, 
-		marginBottom: 20, 
+	buttonStyle: {
+		alignSelf: 'center',
+		marginTop: 20,
+		marginBottom: 20,
 		backgroundColor: "#03A9F4"
 	}
 

@@ -1,6 +1,6 @@
 import {TabNavigator} from 'react-navigation'
 import React, { Component } from 'react';
-import Plants from './scenes/Plants';
+import PlantsController from './scenes/PlantsController';
 import Howto from './scenes/Howto';
 import User from './scenes/User';
 import About from './scenes/About';
@@ -11,29 +11,32 @@ import {
 
 
 export default class Main extends Component {
-    static navigationOptions =
-    {
+  constructor(props){
+    super(props);
+  }
+    static navigationOptions = {
         title: 'Main',
     };
     render() {
       return (
-        <AppTabNavigator/>
+        <AppTabNavigator screenProps={{token: this.props.navigation.state.params}}/>
       );
   }
 }
 
+
 const AppTabNavigator = TabNavigator({
   Howto:{
     screen: Howto,
-    navigationOptions:{
-      tabBarLabel: 'Ajuda'
+    navigationOptions: {
+      tabBarLabel: "Ajuda"
     }
   },
-  Plants:{
-    screen: Plants,
+  PlantsController:{
+    screen: PlantsController,
     navigationOptions:{
       tabBarLabel: 'Pesquisar'
-    }
+    },
   },
   AnalisysController:{
     screen: AnalisysController,

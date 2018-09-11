@@ -1,4 +1,5 @@
 {
   "name": "GreenEyes",
-  "displayName": "GreenEyes"
+  "displayName": "GreenEyes",
+  "expo": {"sdkVersion": "23.0.0"}
 }

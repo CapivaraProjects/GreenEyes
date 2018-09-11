@@ -2,30 +2,27 @@ import React, { Component } from 'react';
 import { StyleSheet} from 'react-native';
 import {StackNavigator} from 'react-navigation'
 import {Icon} from 'react-native-elements'
-import Results from './Results';
-import Analisys from './Analisys'
+import Plants from './Plants'
+import SearchBody from './SearchBody'
 
-export default class AnalisysController extends Component {
-  state = {
-    token: ''
-  }
+export default class PlantsController extends Component {
   static navigationOptions = {
     header: null,
     tabBarIcon: ({tintColor}) => (
-    <Icon name='spa' style={{color: tintColor}} />
+    <Icon name='search' style={{color: tintColor}} />
     )
   };
 
   render() {
     return (
-      <AppStackNavigator screenProps={{token: this.props.screenProps.token}}/>
+      <AppStackNavigator/>
     );
   }
 }
 
 const AppStackNavigator = StackNavigator({
-  Analise:Analisys,
-  Resultado:Results,
+  Plants:Plants,
+  Search:SearchBody,
 });
 
 const styles = StyleSheet.create({

@@ -45,31 +45,31 @@ export default class About extends Component {
                   <Avatar
                     medium
                     rounded
-                    source={require('./thumbnails/thumb.jpg')}
+                    source={require('../thumbnails/thumb.jpg')}
                     onPress={() => console.log("funciona")}
                     containerStyle={{marginRight: 12}}/>
                     <Avatar
                     medium
                     rounded
-                    source={require('./thumbnails/thumb2.jpg')}
+                    source={require('../thumbnails/thumb2.jpg')}
                     onPress={() => console.log("funciona")}
                     containerStyle={{marginRight: 12}}/>
                     <Avatar
                     medium
                     rounded
-                    source={require('./thumbnails/thumb3.jpg')}
+                    source={require('../thumbnails/thumb3.jpg')}
                     onPress={() => console.log("funciona")}
                     containerStyle={{marginRight: 12}}/>
                     <Avatar
                     medium
                     rounded
-                    source={require('./thumbnails/thumb4.jpg')}
+                    source={require('../thumbnails/thumb4.jpg')}
                     onPress={() => console.log("funciona")}
                     containerStyle={{marginRight: 12}}/>
                     <Avatar
                     medium
                     rounded
-                    source={require('./thumbnails/thumb5.jpg')}
+                    source={require('../thumbnails/thumb5.jpg')}
                     onPress={() => console.log("funciona")}
                     containerStyle={{marginRight: 12}}/>
                 </ScrollView>
@@ -84,7 +84,7 @@ export default class About extends Component {
               <Avatar
                 medium
                 rounded
-                source={require('../capivarathumb.png')}
+                source={require('../thumbnails/capivarathumb.png')}
                 onPress={() => console.log("funciona")}/>
             </View>
           </Content>

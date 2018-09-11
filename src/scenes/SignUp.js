@@ -7,7 +7,8 @@ import { AppRegistry,
   View, 
   StyleSheet, 
   Alert,
-  TouchableOpacity} from 'react-native';
+  TouchableOpacity,
+  AsyncStorage} from 'react-native';
 
 export default class SignUp extends Component {
   static navigationOptions =
@@ -80,7 +81,7 @@ export default class SignUp extends Component {
   createUser(){
     if(this.state.username != null & this.state.email != null){
        if(this.state.password == this.state.repassword){
-        fetch('http://10.0.2.2:8888/api/gyresources/users/', {
+        fetch('http://10.0.2.2:5000/api/gyresources/users/', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -90,22 +91,33 @@ export default class SignUp extends Component {
           email: this.state.email,
           username: this.state.username,
           password: this.state.password, 
-          salt: 'SALT',
+          salt: 'salt',
           dateInsertion: 'Realizada em: '+new Date().getDate()+'/'+new Date().getMonth()+'/'+new Date().getFullYear(),
           dateUpdate: 'Realizada em: '+new Date().getDate()+'/'+new Date().getMonth()+'/'+new Date().getFullYear(),
           idType: 1
         }),
-      }).then((response) => {
+      }).then((responseJson) => {
+        var response = responseJson.json();
         if(response.status_code == 200){
           Keyboard.dismiss();
           Alert.alert(
           title='Legal!',
-          'Aleluia irmaos.')
+          'Aleluia irmaos.'+response.message)
           this.props.navigation.navigate('Login');
+          var userInfo = {
+            email: this.state.email,
+            username: this.state.username,
+            password: this.state.password, 
+            salt: 'salt',
+            dateInsertion: 'Realizada em: '+new Date().getDate()+'/'+new Date().getMonth()+'/'+new Date().getFullYear(),
+            dateUpdate: 'Realizada em: '+new Date().getDate()+'/'+new Date().getMonth()+'/'+new Date().getFullYear(),
+            idType: 1
+          }
+          AsyncStorage.setItem("userInfo", JSON.stringify(userInfo));
         }
         Alert.alert(
           title='Opa!',
-          'Não foi não'+response.message)
+          'Não foi não '+response.status_code)
       }).catch((error) => {
             console.error(error);
             Alert.alert(

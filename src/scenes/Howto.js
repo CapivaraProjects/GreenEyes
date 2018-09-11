@@ -1,38 +1,71 @@
-import {StackNavigator} from 'react-navigation';
 import React, { Component } from 'react';
-import ImagePicker from 'react-native-image-picker';
-import {SearchBar} from 'react-native-elements';
-import { Container, Content, List, ListItem, Thumbnail, Text} from 'native-base';
-import {Icon} from 'react-native-elements'
+import { Icon, Button } from 'react-native-elements'
 import {
-  Platform,
   AppRegistry,
-  StyleSheet,
-  Image,
+  Text,
   View,
+  StyleSheet,
+  AsyncStorage,
+  Alert
 } from 'react-native';
 
 
-export default class Plants extends Component {
-  static navigationOptions = {
-    tabBarIcon: ({tintColor}) => (
-    <Icon name='help-outline' style={{color: tintColor}} />
-    )
-  };    
+export default class Howto extends Component {
+  constructor(props){
+    super(props);
+    this.state={
+      token_R: ""
+    } 
+  }
 
-  render() {
-      return (
-        <Container>
-          <View>
-						<Text>Ajuda</Text>
-					</View>
-        </Container>
-      );
-    }
+  static navigationOptions = {
+		tabBarIcon: ({ tintColor }) => (
+			<Icon name='help' style={{ color: tintColor }} />
+		),
+		header: null,
+  };
+
+  render() { 
+    return (
+      <View style={styles.container}>
+        <Text>
+          Por favor, leia a seguir os nossos termos de uso do aplicativo:
+          </Text>
+          <Text>Token: {this.state.token_R}</Text>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-    contentStyle:{
-        backgroundColor: "#ffffff"
-    }
-})
+  container: {
+    backgroundColor: '#ffffff',
+  },
+  title: {
+    alignSelf: 'center',
+    marginTop: 15
+  },
+
+  description: {
+    alignSelf: 'center'
+  },
+  modal: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  modal3: {
+    height: 300,
+    width: 300
+  },
+  itemStyle: {
+    fontSize: 15,
+    height: 75,
+    color: 'black',
+    textAlign: 'center',
+
+  },
+  picker: { 
+    width: 200
+  },
+});

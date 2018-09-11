@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import ActionButton from 'react-native-action-button';
-import {Card, CardItem,Body, Left} from 'native-base';
+import { Card, CardItem, Body, Left, Right } from 'native-base';
 import Modal from 'react-native-modalbox'
 import ImagePicker from 'react-native-image-picker'
-import {Icon} from 'react-native-elements'
+import { Icon, Text } from 'react-native-elements'
 import {
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
   Image,
   View,
   Picker,
+  Alert,
   Button,
   PixelRatio,
   Animated
@@ -20,12 +20,15 @@ import {
 export default class Analisys extends Component {
   constructor() {
     super();
-      this.state = {  
-        ViewArray: [], 
-        Disable_Button: false,
-        isOpen: false,
-        isDisabled: false,
-      }
+    this.state = {
+      ViewArray: [],
+      Disable_Button: false,
+      isOpen: false,
+      isDisabled: false,
+      cardPhoto: null,
+      source64: '',
+      source: null
+    }
     this.animatedValue = new Animated.Value(0);
     this.Array_Value_Index = 1;
   }
@@ -33,12 +36,8 @@ export default class Analisys extends Component {
   static navigationOptions = {
     header: null,
   };
-  
-  state = {
-    cardPhoto: null,
-  };
-  
-  AddNewCard = () =>  {
+
+  AddNewCard = () => {
     this.refs.modal3.close();
     var options = {
       title: 'Selecione uma opção',
@@ -53,146 +52,180 @@ export default class Analisys extends Component {
 
     ImagePicker.showImagePicker(options, (response) => {
       console.log('Response = ', response);
-
-      if (response.didCancel) {
-        console.log('Usuário cancelou a escolha de foto');
-      }
-      else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      }
-      else if (response.customButton) {
-        console.log('Usuário clicou em um botão customizado: ', response.customButton);
-      }
-      else {
-        let source = 'data:image/png;base64,' + response.data
-        
-        this.setState({
-          cardPhoto: source
-        });
-        
-        this.animatedValue.setValue(0);
-        let AddNewCard = { Array_Value_Index: this.Array_Value_Index }
-        this.setState({ Disable_Button: true, ViewArray: [ ...this.state.ViewArray, AddNewCard, ]}, () =>
-        {
-          Animated.timing(
-              this.animatedValue,
-              {
-                toValue: 1,
-                duration: 400,
-                useNativeDriver: true
-              }
-          ).start(() =>
+      //let source64 = 'data:image/png;base64,' + response.data
+      let source = { uri: response.uri };
+      Alert.alert(response.data)
+      this.setState({ cardPhoto: source, source64: response.data });
+      this.animatedValue.setValue(0);
+      let AddNewCard = { Array_Value_Index: this.Array_Value_Index }
+      this.setState({ Disable_Button: true, ViewArray: [...this.state.ViewArray, AddNewCard,] }, () => {
+        Animated.timing(
+          this.animatedValue,
           {
-            this.Array_Value_Index = this.Array_Value_Index + 1;
-            this.setState({ Disable_Button: false });
-          }); 
+            toValue: 1,
+            duration: 400,
+            useNativeDriver: true
+          }
+        ).start(() => {
+          this.Array_Value_Index = this.Array_Value_Index + 1;
+          this.setState({ Disable_Button: false });
         });
-      }
-    });                  
+      });
+    });
   }
 
+  sendImage() {
+    console.log("token: " + this.props.screenProps.token.token)
+    fetch('http://10.0.2.2:5000/api/gyresources/images/', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + this.props.screenProps.token.token
+      },
+      body: JSON.stringify({
+        id: 1,
+        idDisease: 50,
+        url: this.state.source64,
+        description: '',
+        source: 'cameraRoll',
+        size: 1
+      }),
+    }).then((response) => response.json())
+      .then(response => {
+        if (response.status_code == 200 || response.status_code == 201) {
+          Alert.alert(title = 'Imagem enviada!: ' + response.message)
+          this.setState({ idImagem: response.response.id });
+          console.log(response.status_code + ',' + response.message)
+          this.addAnalysis();
+        }
+      }).catch((error) => response.json())
+      .catch(error => {
+        Alert.alert(title = 'Erro!: ' + response.message)
+        console.error(error);
+      });
+  }
 
-		render()
-		{
-				const AnimationValue = this.animatedValue.interpolate(
-				{
-						inputRange: [ 0, 1 ],
-						outputRange: [ -59, 0 ]
-				});
- 
-				let Render_Animated_View = this.state.ViewArray.map(( item, key ) =>
-				{
-          this.analisysDate='Realizada em: '+new Date().getDate()+'/'+new Date().getMonth()+'/'+new Date().getFullYear();
-						if(( key ) == this.Array_Value_Index)
-						{
-								return(
-									<Animated.View 
-										key = { key } 
-										style = {[ styles.Animated_View_Style,
-										{ opacity: this.animatedValue, transform: [{ translateY: AnimationValue }] }]}>
-											<Card>
-												<CardItem>
-													<Left>
-														<Icon name='book'/>
-															<Body>
-																<Text>Analise {item.Array_Value_Index}</Text>
-																<Text note>{this.analisysDate}</Text>
-															</Body>
-													</Left>
-												</CardItem>
-												<CardItem cardBody button onPress={() => {this.props.navigation.push('Resultado')}}>
-													<Image source={this.state.cardPhoto}
-														style={{height: 140, width: null, flex: 1 }}
-													/>
-												</CardItem>
-												<CardItem>
-													<Left>
-														<Icon name='insert-chart'/>
-														<Text> 80%</Text>
-													</Left>
-												</CardItem>
-											</Card>
-									</Animated.View>
-							);
-						}
-						else
-						{
-							return(
-								<View 
-									key = { key } 
-									style = { styles.Animated_View_Style }>
-									<Card>
-										<CardItem>
-											<Left>
-												<Icon name='book'/>
-													<Body>
-														<Text>Análise {item.Array_Value_Index}</Text>
-														<Text note>{this.analisysDate}</Text>
-													</Body>
-											</Left>
-										</CardItem>
+  addAnalysis() {
+    fetch('http://10.0.2.2:5000/api/gyresources/analysis/', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + this.props.screenProps.token.token
+      },
+      body: JSON.stringify({
+        id: 0,
+        idImage: this.state.idImagem,
+        idClassifier: 1
+      }),
+    }).then((response) => response.json())
+      .then(response => {
+        Alert.alert(title = 'Uhuw', 'Analise criada' + response.message)
+        console.log('Token: ' + token + ', IdImage: ' + this.state.idImagem + ', Message from API: ' + response.message)
+      }).catch((error) => response.json())
+      .catch(error => {
+        Alert.alert(title = 'Error: ' + response.message)
+        console.error('Error: ' + error + ', Message from API:' + response.message);
+      });
+  }
 
-										<CardItem cardBody button onPress={() => {
-                      sendImage();
-                      this.props.navigation.push('Resultado')
-                      }}>
-											<Image source={this.state.cardPhoto}
-												style={{height: 140, width: null, flex: 1 }}
-											/>
-										</CardItem>
-										<CardItem>
-											<Left>
-                          <Icon name='insert-chart'/>
-                          <Text> 80%</Text>
-											</Left>
-										</CardItem>
-									</Card>
-								</View>
-							);
-						}
-        });
-        return(
-        <View style = { styles.MainContainer }>
+  render() {
+    const AnimationValue = this.animatedValue.interpolate(
+      {
+        inputRange: [0, 1],
+        outputRange: [-59, 0]
+      });
+
+    let Render_Animated_View = this.state.ViewArray.map((item, key) => {
+      this.analisysDate = 'Realizada em: ' + new Date().getDate() + '/' + new Date().getMonth() + '/' + new Date().getFullYear();
+      if ((key) == this.Array_Value_Index) {
+        return (
+          <Animated.View
+            key={key}
+            style={[styles.Animated_View_Style,
+            { opacity: this.animatedValue, transform: [{ translateY: AnimationValue }] }]}>
+            <Card>
+              <CardItem>
+                <Right>
+                  <Icon name="check" />
+                </Right>
+                <Left>
+                  <Icon name='book' />
+                  <Body>
+                    <Text>Analise {item.Array_Value_Index}</Text>
+                    <Text note>{this.analisysDate}</Text>
+                  </Body>
+                </Left>
+              </CardItem>
+              <CardItem cardBody button>
+                <Image source={this.state.cardPhoto}
+                  style={{ height: 140, width: null, flex: 1 }}
+                />
+              </CardItem>
+            </Card>
+          </Animated.View>
+        );
+      }
+      else {
+        return (
+          <View
+            key={key}
+            style={styles.Animated_View_Style}>
+            <Card>
+              <CardItem>
+                <Right>
+                  <Icon name="check" />
+                </Right>
+                <Left>
+                  <Icon name='book' />
+                  <Body>
+                    <Text>Análise {item.Array_Value_Index}</Text>
+                    <Text note>{this.analisysDate}</Text>
+                  </Body>
+                </Left>
+              </CardItem>
+
+              <CardItem cardBody button onPress={() => { this.sendImage() }}>
+                <Image source={this.state.cardPhoto}
+                  style={{ height: 140, width: null, flex: 1 }}
+                />
+              </CardItem>
+            </Card>
+          </View>
+        );
+      }
+    });
+    return (
+      <View style={styles.MainContainer}>
         <ScrollView>
-          <View style = {{ flex: 1, padding: 2 }}>
-          {
+          <View style={{ flex: 1, padding: 2 }}>
+            {
               Render_Animated_View
-          }
-        </View>
-
+            }
+          </View>
+          <View
+          textAlign="center"
+          alignItems="center"
+          paddingTop={15}
+          padding={10}
+          
+          >
+          <Text h4>Você ainda não possui nenhuma análise, comece clicando no botão +</Text>
+          </View>
         </ScrollView>
-        
-        <ActionButton 
-          buttonColor="#00BCD4" 
-          renderIcon={() => <Icon name="add" />} 
+
+        <ActionButton
+          buttonColor="#00BCD4"
+          renderIcon={() => <Icon name="add" />}
           onPress={() => this.refs.modal3.open()} />
 
         <Modal style={[styles.modal, styles.modal3]}
           position={"center"}
           ref={"modal3"} isDisabled={this.state.isDisabled}>
           <View>
-          <Text>
-            Selecione a planta a ser classificada:
+            <Text>
+              Selecione a planta a ser classificada:
           </Text>
             <Picker
               style={styles.picker}
@@ -201,13 +234,13 @@ export default class Analisys extends Component {
               <Picker.Item label="Tomate" value="tomate" />
             </Picker>
             <Button onPress={
-                this.AddNewCard
-                } title="Confirmar">
-              <View style={[styles.avatar, styles.avatarContainer, {marginBottom: 20}]}>
-              { 
-                this.state.cardPhoto === null ? <Text>Tire uma foto</Text> :
-                <Image style={styles.avatar} source={this.state.cardPhoto} />
-              }
+              this.AddNewCard
+            } title="Confirmar">
+              <View style={[styles.avatar, styles.avatarContainer, { marginBottom: 20 }]}>
+                {
+                  this.state.cardPhoto === null ? <Text>Tire uma foto</Text> :
+                    <Image style={styles.avatar} source={this.state.cardPhoto} />
+                }
               </View>
             </Button>
           </View>
@@ -217,44 +250,24 @@ export default class Analisys extends Component {
   }
 }
 
-sendImage = () =>{
-  window.btoa = window.btoa || require('Base64').btoa;
-  const token = AsyncStorage.getItem("token");
-  fetch('http://10.0.2.2:888/api/gyresources/images/', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer '+ token
-        },
-        body: JSON.stringify({
-          url: 'test',
-          description: 'services',
-          source: btoa(this.state.cardPhoto),
-          size=1
-        }),
-      }).then((response) => {
-        console.log(response)
-      }).catch((error) => {
-        console.error(error);
-      });
-}
+
 
 const styles = StyleSheet.create({
   MainContainer:
-		{
-			flex: 1,
-			backgroundColor: '#eee',
-			justifyContent: 'center',
-			paddingTop: (Platform.OS == 'ios') ? 20 : 0
-		},
- 
-		Animated_View_Style:
-		{
-			flex: 1, 
-			justifyContent: 'center',
-    },
-    
+  {
+    flex: 1,
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
+    paddingTop: (Platform.OS == 'ios') ? 20 : 0
+  },
+
+  Animated_View_Style:
+  {
+    flex: 1,
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
+  },
+
   avatar: {
     borderRadius: 75,
     width: 150,
@@ -262,7 +275,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor : '#BDBDBD'
+    backgroundColor: '#BDBDBD'
   },
   actionButtonIcon: {
     fontSize: 20,
@@ -286,7 +299,7 @@ const styles = StyleSheet.create({
     height: 300,
     width: 300
   },
-  
+
   text: {
     color: "black",
     fontSize: 22
@@ -312,5 +325,5 @@ const styles = StyleSheet.create({
     borderRadius: 75,
     width: 150,
     height: 150
-  }  
+  }
 });
