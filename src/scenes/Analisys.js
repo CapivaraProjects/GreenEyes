@@ -97,7 +97,7 @@ export default class Analisys extends Component {
           Alert.alert(title = 'Imagem enviada!: ' + response.message)
           this.setState({ idImagem: response.response.id });
           console.log(response.status_code + ',' + response.message)
-          this.addAnalysis();
+          //this.addAnalysis();
         }
       }).catch((error) => response.json())
       .catch(error => {
@@ -146,22 +146,27 @@ export default class Analisys extends Component {
             style={[styles.Animated_View_Style,
             { opacity: this.animatedValue, transform: [{ translateY: AnimationValue }] }]}>
             <Card>
-              <CardItem>
-                <Right>
-                  <Icon name="check" />
-                </Right>
+              <CardItem onPress={()=> this.addAnalysis()}>
                 <Left>
-                  <Icon name='book' />
+                  <Icon onPress={()=>this.addAnalysis()} name='book' />
                   <Body>
-                    <Text>Analise {item.Array_Value_Index}</Text>
+                    <Text>Análise {item.Array_Value_Index}</Text>
                     <Text note>{this.analisysDate}</Text>
                   </Body>
                 </Left>
+                <Right>
+                  <Icon name="check" />
+                </Right>
               </CardItem>
               <CardItem cardBody button>
                 <Image source={this.state.cardPhoto}
                   style={{ height: 140, width: null, flex: 1 }}
                 />
+              </CardItem>
+              <CardItem>
+                <Left>
+                  <Icon onPress={()=>this.addAnalysis()} name='check' />
+                </Left>
               </CardItem>
             </Card>
           </Animated.View>
@@ -173,23 +178,27 @@ export default class Analisys extends Component {
             key={key}
             style={styles.Animated_View_Style}>
             <Card>
-              <CardItem>
-                <Right>
-                  <Icon name="check" />
-                </Right>
+              <CardItem onPress={()=> this.addAnalysis()}>
                 <Left>
-                  <Icon name='book' />
+                  <Icon onPress={()=> this.addAnalysis()} name='book' />
                   <Body>
                     <Text>Análise {item.Array_Value_Index}</Text>
                     <Text note>{this.analisysDate}</Text>
                   </Body>
                 </Left>
+                <Right>
+                  <Icon name="check" />
+                </Right>
               </CardItem>
-
               <CardItem cardBody button onPress={() => { this.sendImage() }}>
                 <Image source={this.state.cardPhoto}
                   style={{ height: 140, width: null, flex: 1 }}
                 />
+              </CardItem>
+              <CardItem>
+                <Left>
+                  <Icon onPress={()=>this.addAnalysis()} name='check' />
+                </Left>
               </CardItem>
             </Card>
           </View>
@@ -205,13 +214,13 @@ export default class Analisys extends Component {
             }
           </View>
           <View
-          textAlign="center"
-          alignItems="center"
-          paddingTop={15}
-          padding={10}
-          
+            textAlign="center"
+            alignItems="center"
+            paddingTop={15}
+            padding={10}
+
           >
-          <Text h4>Você ainda não possui nenhuma análise, comece clicando no botão +</Text>
+            <Text h4>Você ainda não possui nenhuma análise, comece clicando no botão +</Text>
           </View>
         </ScrollView>
 

@@ -39,10 +39,10 @@ export default class Login extends Component {
           <View padding={5}></View>
           <Button
             backgroundColor='#03A9F4'
-            title='Recuperar conta'
+            title='Cadastre-se'
             rounded
             onPress={() => {
-              this.props.navigation.navigate('PwRecovery');
+              this.props.navigation.navigate('SignUp');
             }
             }>
           </Button>
@@ -51,8 +51,8 @@ export default class Login extends Component {
             padding={15}>
             <Text
               onPress={() => {
-                this.props.navigation.navigate('SignUp');
-              }}>Novo por aqui? Crie sua conta!</Text>
+                this.props.navigation.navigate('PwRecovery');
+              }}>Esqueceu sua senha?</Text>
           </View>
         </View>
       </View>

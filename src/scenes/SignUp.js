@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import {StackNavigator} from 'react-navigation';
 import { AppRegistry, 
-  TextInput,
   Image,
-  Text,
   View, 
   StyleSheet, 
-  Alert,
-  TouchableOpacity,
-  AsyncStorage} from 'react-native';
+  Alert} from 'react-native';
+import {FormInput, FormLabel, Button, Text} from 'react-native-elements'
 
 export default class SignUp extends Component {
   static navigationOptions =
@@ -29,50 +26,40 @@ export default class SignUp extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.logoContainer}>
-          <Image style={styles.logo}
-          source={require('GreenEyes/src/logo.jpeg')}/>
+          <Text h2>Cadastro</Text>
         </View>
 
         <View style={styles.formContainer}>
-        <TextInput style={styles.input}
-          placeholder="E-mail"
-          onChangeText={(value) => this.setState({email: value})}
-        />
-
-        <TextInput style={styles.input}
-          autoCapitalize="none" 
-          returnKeyType="next" 
-          placeholder='Usuário'
-          onChangeText={(value) => this.setState({username: value})}
-        />
-          
-        <TextInput style={styles.input}
-          secureTextEntry={true}
-          placeholder="Senha"
-          onChangeText={(value) => this.setState({password: value})}
-        />
-
-        <TextInput style={styles.input}
-          secureTextEntry={true}
-          placeholder="Re-digite a senha"
-          onChangeText={(value) => this.setState({repassword: value})}
-        />
-
-        <TouchableOpacity style={styles.buttonContainer}
-              color= "#ADFF2F"
-              onPress={() =>{this.createUser()}
-          }>
-          <Text style={styles.buttonText}>Enviar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonContainer}
-            color= "#ADFF2F"
-            onPress={() =>
-              {
-                  this.props.navigation.navigate('Login');
-              }
+        <FormLabel>E-mail</FormLabel>
+        <FormInput activeOpacity={0.7} onChangeText={(value) => this.setState({ email: value })} />
+        <FormLabel>Usuário</FormLabel>
+        <FormInput activeOpacity={0.7} onChangeText={(value) => this.setState({ username: value })} />
+        <FormLabel>Senha</FormLabel>
+        <FormInput secureTextEntry={true} activeOpacity={0.7} onChangeText={(value) => this.setState({ password: value })} />
+        <FormLabel>Re-digite a senha</FormLabel>
+        <FormInput secuteTextEntry={true} activeOpacity={0.7} onChangeText={(value) => this.setState({ repassword: value })} />
+        
+        <Button
+            backgroundColor='#83f02f'
+            borderRadius={4}
+            title='Enviar'
+            rounded
+            onPress={() => {
+              this.createUser();
+            }
             }>
-            <Text style={styles.buttonText}>Já possui uma conta? Entre!</Text>
-        </TouchableOpacity>
+        </Button>
+        <View padding={5}></View>
+        <Button
+            backgroundColor='#83f02f'
+            borderRadius={4}
+            title='Já possui uma conta? Entre!'
+            rounded
+            onPress={() => {
+              this.props.navigation.navigate('Login');
+            }
+            }>
+        </Button>
         </View>
       </View>
     );
@@ -100,9 +87,6 @@ export default class SignUp extends Component {
         var response = responseJson.json();
         if(response.status_code == 200){
           Keyboard.dismiss();
-          Alert.alert(
-          title='Legal!',
-          'Aleluia irmaos.'+response.message)
           this.props.navigation.navigate('Login');
           var userInfo = {
             email: this.state.email,
@@ -113,7 +97,6 @@ export default class SignUp extends Component {
             dateUpdate: 'Realizada em: '+new Date().getDate()+'/'+new Date().getMonth()+'/'+new Date().getFullYear(),
             idType: 1
           }
-          AsyncStorage.setItem("userInfo", JSON.stringify(userInfo));
         }
         Alert.alert(
           title='Opa!',
@@ -134,7 +117,6 @@ export default class SignUp extends Component {
 }
 
 
-
 const styles = StyleSheet.create({
     container:{
       backgroundColor:'#FFF',
@@ -146,15 +128,7 @@ const styles = StyleSheet.create({
       flexGrow: 1,
       justifyContent: 'center'
     },
-  
-    logo: {
-      position: 'absolute',
-      width: 240,
-      height: 240,
-      borderWidth: 1,
-      borderRadius: 150
-    },
-  
+    
     input:{
       height: 50,
       marginBottom: 20,
@@ -165,29 +139,5 @@ const styles = StyleSheet.create({
     formContainer:{
       padding: 28
     },
-  
-    buttonContainer:{
-      backgroundColor: '#83f02f',
-      paddingVertical: 15,
-      marginBottom: 10
-    },
-  
-    buttonSignUp: {
-      backgroundColor: '#03A9F4',
-      width:175,
-      paddingVertical: 15,
-    },
-  
-    buttonPassRecovery:{
-      backgroundColor: '#03A9F4',
-      position: 'absolute',
-      width:175,
-      paddingVertical: 15,
-    },
-    
-    buttonText:{
-      color: '#fff',
-      textAlign: 'center',
-      fontWeight: '700'
-    }
+
 });

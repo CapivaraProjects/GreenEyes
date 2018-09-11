@@ -3,9 +3,10 @@ package com.greeneyes;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-//import com.imagepicker.ImagePickerPackage;
-//import org.reactnative.camera.RNCameraPackage;
-//import com.oblador.vectoricons.VectorIconsPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.imagepicker.ImagePickerPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.imagepicker.ImagePickerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -16,18 +17,17 @@ import java.util.List;
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+
     @Override
     public boolean getUseDeveloperSupport() {
       return BuildConfig.DEBUG;
     }
-
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
-              new MainReactPackage()
-              //new ImagePickerPackage(),
-              //new RNCameraPackage(),
-              //new VectorIconsPackage()
+        new MainReactPackage(),
+        new VectorIconsPackage(),
+        new ImagePickerPackage()
       );
     }
 
