@@ -4,13 +4,11 @@ import PlantsController from './scenes/PlantsController';
 import Howto from './scenes/Howto';
 import User from './scenes/User';
 import About from './scenes/About';
-import TermsOfUse from './scenes/TermsOfUse';
 import AnalisysController from './scenes/AnalisysController';
-import {
+import { 
   StyleSheet,
 } from 'react-native';
 import Analisys from './scenes/Analisys';
-
 
 export default class Main extends Component {
   constructor(props){
