@@ -4,10 +4,12 @@ import PlantsController from './scenes/PlantsController';
 import Howto from './scenes/Howto';
 import User from './scenes/User';
 import About from './scenes/About';
+import TermsOfUse from './scenes/TermsOfUse';
 import AnalisysController from './scenes/AnalisysController';
 import {
   StyleSheet,
 } from 'react-native';
+import Analisys from './scenes/Analisys';
 
 
 export default class Main extends Component {
@@ -29,8 +31,9 @@ const AppTabNavigator = TabNavigator({
   Howto:{
     screen: Howto,
     navigationOptions: {
-      tabBarLabel: "Ajuda"
-    }
+      tabBarLabel: "Ajuda",
+    },
+    tabBarOptions: '#FFFFFF'
   },
   PlantsController:{
     screen: PlantsController,
@@ -64,7 +67,7 @@ const AppTabNavigator = TabNavigator({
   backgroundColor: "#8BC34A",
   tabBarOptions: {
     activeTintColor: "#212121",
-    inactiveTintColor: "#DCEDC8",
+    inactiveTintColor: "#FFFFFF",
     labelStyle:{
       fontSize:10
     },
@@ -72,7 +75,8 @@ const AppTabNavigator = TabNavigator({
       backgroundColor: "#8BC34A",
       height: 56
     },
-    navigationOptions: {header: null,
+    navigationOptions: {
+      header: null,
       androidStatusBarColor:'#689F38'},
     showLabel: true,
     showIcon: true

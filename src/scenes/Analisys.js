@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import ActionButton from 'react-native-action-button';
-import { Card, CardItem, Body, Left, Right } from 'native-base';
 import Modal from 'react-native-modalbox'
 import ImagePicker from 'react-native-image-picker'
-import { Icon, Text } from 'react-native-elements'
+import { Text, Icon } from 'react-native-elements'
 import {
   Platform,
   ScrollView,
@@ -14,23 +13,39 @@ import {
   Alert,
   Button,
   PixelRatio,
-  Animated
 } from 'react-native';
+import OpenCV from '../NativeModules/OpenCV';
+import { CardList } from 'react-native-card-list';
+import { Right } from 'native-base';
 
 export default class Analisys extends Component {
   constructor() {
     super();
     this.state = {
-      ViewArray: [],
       Disable_Button: false,
       isOpen: false,
       isDisabled: false,
       cardPhoto: null,
-      source64: '',
-      source: null
+      source: null,
+      analisysDate: '',
+      add: false,
+      statusAnalisys: false,
+      id: 0,
+      title: "Analise ID: ",
+      cards: [],
+      cardes: [{
+        id: "0",
+        title: "Analise ID: 1",
+        picture: require('../ft.jpg'),
+        content: <Text>TOMATE</Text>
+      },
+      {
+        id: "1",
+        title: "Tomatew",
+        picture: require('../tomate.jpg'),
+        content: <Text>TESTE FODAA</Text>
+      }],
     }
-    this.animatedValue = new Animated.Value(0);
-    this.Array_Value_Index = 1;
   }
 
   static navigationOptions = {
@@ -38,9 +53,10 @@ export default class Analisys extends Component {
   };
 
   AddNewCard = () => {
+    this.setState({ status: '' });
     this.refs.modal3.close();
     var options = {
-      title: 'Selecione uma opção',
+      title: 'Selecione uma opção:',
       takePhotoButtonTitle: 'Tirar Foto',
       chooseFromLibraryButtonTitle: 'Escolher da galeria',
       cancelButtonTitle: 'Cancelar',
@@ -52,30 +68,56 @@ export default class Analisys extends Component {
 
     ImagePicker.showImagePicker(options, (response) => {
       console.log('Response = ', response);
-      //let source64 = 'data:image/png;base64,' + response.data
       let source = { uri: response.uri };
-      Alert.alert(response.data)
-      this.setState({ cardPhoto: source, source64: response.data });
-      this.animatedValue.setValue(0);
-      let AddNewCard = { Array_Value_Index: this.Array_Value_Index }
-      this.setState({ Disable_Button: true, ViewArray: [...this.state.ViewArray, AddNewCard,] }, () => {
-        Animated.timing(
-          this.animatedValue,
-          {
-            toValue: 1,
-            duration: 400,
-            useNativeDriver: true
-          }
-        ).start(() => {
-          this.Array_Value_Index = this.Array_Value_Index + 1;
-          this.setState({ Disable_Button: false });
-        });
+      this.setState({ cardPhoto: source, add: true, analisysDate: new Date().getDate() + '/' + new Date().getMonth() + '/' + new Date().getFullYear() });
+      this.setState(this.state.cards[this.state.id] = {
+        id: this.state.id.toString(),
+        title: 'Analise id: ' + this.state.id,
+        picture: this.state.cardPhoto,
+        content: <View>
+          <Text h4>Doenças detectadas: </Text>
+          <View style={styles.analisys}>
+            <Icon name='bug-report'></Icon>
+            <Text> 84.5% _nome_doença_1</Text>
+            <Right><Text style={{ color: 'blue' }} onPress={() => {
+              this.props.navigation.navigate('Results');
+            }
+            }>Ver Mais</Text></Right>
+          </View>
+          <View style={styles.analisys}>
+            <Icon name='bug-report'></Icon>
+            <Text> 32.1% _nome_doença_2</Text>
+            <Right><Text style={{ color: 'blue' }}
+              onPress={() => {
+                this.props.navigation.navigate('Results');
+              }
+              }>Ver Mais</Text></Right>
+          </View>
+          <View style={styles.analisys}>
+            <Icon name='bug-report'></Icon>
+            <Text> 9.2% _nome_doença_3</Text>
+            <Right>
+              <Text style={{ color: 'blue' }}
+                onPress={() => {
+                  this.props.navigation.navigate('Results');
+                }
+                }>Ver Mais</Text>
+            </Right>
+          </View>
+          <Text h4>Informações adicionais:</Text>
+          <Text>Saiba que a sua análise além de lhe ajudar a identificar a doença que
+          está afetando o seu cultivo, está contribuindo junto com o crescimento
+                    de nosso banco de imagens! </Text>
+          <Text>Portanto, desfrute o máximo que o
+                    Aplicativo GreenEyes pode te oferecer!</Text>
+        </View>
       });
+      this.setState({ id: parseInt(this.state.id) + 1 });
     });
   }
 
   sendImage() {
-    console.log("token: " + this.props.screenProps.token.token)
+    console.log("log do sendImage:" + this.props.screenProps.token.token)
     fetch('http://10.0.2.2:5000/api/gyresources/images/', {
       method: 'POST',
       headers: {
@@ -97,7 +139,7 @@ export default class Analisys extends Component {
           Alert.alert(title = 'Imagem enviada!: ' + response.message)
           this.setState({ idImagem: response.response.id });
           console.log(response.status_code + ',' + response.message)
-          //this.addAnalysis();
+          this.addAnalysis();
         }
       }).catch((error) => response.json())
       .catch(error => {
@@ -107,6 +149,7 @@ export default class Analisys extends Component {
   }
 
   addAnalysis() {
+    console.log("Cheguei no addAnalisys")
     fetch('http://10.0.2.2:5000/api/gyresources/analysis/', {
       method: 'POST',
       headers: {
@@ -121,107 +164,56 @@ export default class Analisys extends Component {
       }),
     }).then((response) => response.json())
       .then(response => {
-        Alert.alert(title = 'Uhuw', 'Analise criada' + response.message)
-        console.log('Token: ' + token + ', IdImage: ' + this.state.idImagem + ', Message from API: ' + response.message)
+        this.analisysComplete(response.id)
+        console.log('Token: ' + this.props.screenProps.token.token + ', IdImage: ' + this.state.idImagem + ', Message from API: ' + response.message)
       }).catch((error) => response.json())
       .catch(error => {
-        Alert.alert(title = 'Error: ' + response.message)
-        console.error('Error: ' + error + ', Message from API:' + response.message);
+        Alert.alert(title = 'Error: ')
+        console.error('Error: ' + error);
       });
   }
 
-  render() {
-    const AnimationValue = this.animatedValue.interpolate(
-      {
-        inputRange: [0, 1],
-        outputRange: [-59, 0]
-      });
+  async analisysComplete() {
+    console.log("Log do analisysComplete")
+    fetch('http://10.0.2.2:5000/api/gyresources/analysisResult', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'dataType': 'json'
+      },
+      body: JSON.stringify({
+        action: 'search',
+        idAnalysis: this.response.id,
+        idDisease: 1,
+        score: 0,
+        frame: '100,100,128,128',
+        pageSize: 10,
+        offset: 0
+      })
+    }).then(response => response.json())
+      .then(response => {
+        if (response.status_code == 200 || response.status_code == 201) {
+          if (response.response == "") {
+            this.analisysComplete();
+          }
+          else {
 
-    let Render_Animated_View = this.state.ViewArray.map((item, key) => {
-      this.analisysDate = 'Realizada em: ' + new Date().getDate() + '/' + new Date().getMonth() + '/' + new Date().getFullYear();
-      if ((key) == this.Array_Value_Index) {
-        return (
-          <Animated.View
-            key={key}
-            style={[styles.Animated_View_Style,
-            { opacity: this.animatedValue, transform: [{ translateY: AnimationValue }] }]}>
-            <Card>
-              <CardItem onPress={()=> this.addAnalysis()}>
-                <Left>
-                  <Icon onPress={()=>this.addAnalysis()} name='book' />
-                  <Body>
-                    <Text>Análise {item.Array_Value_Index}</Text>
-                    <Text note>{this.analisysDate}</Text>
-                  </Body>
-                </Left>
-                <Right>
-                  <Icon name="check" />
-                </Right>
-              </CardItem>
-              <CardItem cardBody button>
-                <Image source={this.state.cardPhoto}
-                  style={{ height: 140, width: null, flex: 1 }}
-                />
-              </CardItem>
-              <CardItem>
-                <Left>
-                  <Icon onPress={()=>this.addAnalysis()} name='check' />
-                </Left>
-              </CardItem>
-            </Card>
-          </Animated.View>
-        );
-      }
-      else {
-        return (
-          <View
-            key={key}
-            style={styles.Animated_View_Style}>
-            <Card>
-              <CardItem onPress={()=> this.addAnalysis()}>
-                <Left>
-                  <Icon onPress={()=> this.addAnalysis()} name='book' />
-                  <Body>
-                    <Text>Análise {item.Array_Value_Index}</Text>
-                    <Text note>{this.analisysDate}</Text>
-                  </Body>
-                </Left>
-                <Right>
-                  <Icon name="check" />
-                </Right>
-              </CardItem>
-              <CardItem cardBody button onPress={() => { this.sendImage() }}>
-                <Image source={this.state.cardPhoto}
-                  style={{ height: 140, width: null, flex: 1 }}
-                />
-              </CardItem>
-              <CardItem>
-                <Left>
-                  <Icon onPress={()=>this.addAnalysis()} name='check' />
-                </Left>
-              </CardItem>
-            </Card>
-          </View>
-        );
-      }
-    });
+          }
+        }
+      })
+  }
+
+  render() {
     return (
       <View style={styles.MainContainer}>
         <ScrollView>
-          <View style={{ flex: 1, padding: 2 }}>
-            {
-              Render_Animated_View
-            }
-          </View>
-          <View
-            textAlign="center"
-            alignItems="center"
+          <View 
             paddingTop={15}
-            padding={10}
-
-          >
-            <Text h4>Você ainda não possui nenhuma análise, comece clicando no botão +</Text>
+            padding={25}>
+            <Text h3 >Minhas Análises</Text>
           </View>
+          <CardList cards={this.state.cards} />
         </ScrollView>
 
         <ActionButton
@@ -240,7 +232,7 @@ export default class Analisys extends Component {
               style={styles.picker}
               mode="dropdown"
               itemStyle={styles.itemStyle}>
-              <Picker.Item label="Tomate" value="tomate" />
+              <Picker.Item label='Tomate' value="tomate" />
             </Picker>
             <Button onPress={
               this.AddNewCard
@@ -259,24 +251,17 @@ export default class Analisys extends Component {
   }
 }
 
-
-
 const styles = StyleSheet.create({
-  MainContainer:
-  {
+  MainContainer: {
     flex: 1,
     backgroundColor: '#FFF',
     justifyContent: 'center',
     paddingTop: (Platform.OS == 'ios') ? 20 : 0
   },
+  analisys: {
+    flexDirection: 'row',
 
-  Animated_View_Style:
-  {
-    flex: 1,
-    backgroundColor: '#FFF',
-    justifyContent: 'center',
   },
-
   avatar: {
     borderRadius: 75,
     width: 150,

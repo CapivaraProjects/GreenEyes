@@ -71,23 +71,23 @@ export default class User extends Component {
 			<Container>
 				<Content style={styles.container}>
 					<Avatar
-						containerStyle={{ flex: 1, alignSelf: 'center', marginTop: 10}}
+						containerStyle={{ flex: 1, alignSelf: 'center', marginTop: 10 }}
 						xlarge
 						rounded
 						source={img}
 						activeOpacity={0}>
 					</Avatar>
-					<List style={{marginTop: 10}}>
+					<List style={{ marginTop: 10 }}>
 						<ListItem>
 							<InputGroup>
 								<Icon name="person" style={styles.iconStyle} />
-								<Text>Hugo.Yoshimura</Text>
+								<Text>_username_</Text>
 							</InputGroup>
 						</ListItem>
 						<ListItem>
 							<InputGroup>
 								<Icon name="email" style={styles.iconStyle} />
-								<Input placeholder="hugomasayoshi@gmail.com" />
+								<Input placeholder="useremail@mail.com" />
 							</InputGroup>
 						</ListItem>
 						<ListItem>
@@ -229,40 +229,32 @@ export default class User extends Component {
 	}
 
 	updateUser() {
-		var userInfo = AsyncStorage.getItem("userInfo")
-		Alert.alert(title = "olha", 'userinfo' + userInfo)
-		AsyncStorage.getItem("token").then((token) => {
-			fetch('http://10.0.2.2:5000/api/gyresources/users/', {
-				method: 'PUT',
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json',
-					'Authorization': 'Bearer ' + token
-				},
-				body: JSON.stringify({
-					id: 11,
-					idType: 1,
-					email: "foda@foda.com",
-					username: "a",
-					password: "b",
-					salt: "salt",
-					dateInsertion: "string",
-					dateUpdate: "23/08/18"
-				}),
-			}).then(response => response.json())
-				.then(response => {
-					Alert.alert(title = 'foi', 'seliga' + response.message)
-					console.log(response);
-				}).catch(error => {
-					console.log(error);
-					Alert.alert(
-						title = 'Erro!',
-						JSON.stringify(error))
-					Alert.alert(title = 'foda', 'token ' + aux.token)
-				});
-		});
-
-
+		fetch('http://10.0.2.2:5000/api/gyresources/users/', {
+			method: 'PUT',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer ' + this.props.screenProps.token.token
+			},
+			body: JSON.stringify({
+				id: this.state.id,
+				idType: 1,
+				email: this.state.userEmail,
+				username: this.state.username,
+				password: this.state.userPassword,
+				dateInsertion: "string",
+				dateUpdate: new Date().getDate() + '/' + new Date().getMonth() + '/' + new Date().getFullYear()
+			}),
+		}).then(response => response.json())
+			.then(response => {
+				Alert.alert(title = 'Informações atualizadas!', 'Resposta: ' + response.message)
+				console.log(response);
+			}).catch(error => {
+				console.log(error);
+				Alert.alert(
+					title = 'Erro!',
+					JSON.stringify(error))
+			});
 	}
 
 	sendEmail() {
@@ -276,10 +268,10 @@ export default class User extends Component {
 				userEmail: this.state.email,
 				coreVerification: this.state.generatedCode,
 			}),
-		}).then((response) => {
-			Alert.alert(
-				title = 'Feito!',
-				'Siga as instruções no e-mail que enviamos a você!')
+		}).then(response => response.json())
+			.then(response => {
+			Alert.alert(title = 'Sucesso!', 'Enviamos uma nova senha a você!');
+			console.log(response);
 		}).catch((error) => {
 			console.error(error);
 		});

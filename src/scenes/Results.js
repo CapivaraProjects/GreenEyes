@@ -31,55 +31,14 @@ export default class Results extends Component
 	static navigationOptions = {
     header: null,
 	};
-	
-	getAnalisys() {
-    AsyncStorage.getItem("analisys").then((analisys) => {
-      fetch('http://10.0.2.2:5000/api/gyresources/analysisResult', {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'dataType': 'json'
-        },
-        body: JSON.stringify({
-					action: 'search',
-					idAnalysis: analisys.id,
-					idDisease: 1,
-					score: 0,
-					frame: '100,100,128,128',
-					pageSize: 10,
-					offset: 0
-        }),
-      }).then((response) => response.json())
-        .then(response => {
-          if (response.status_code == 200) {
-						Alert.alert(title = 'Foi', 'é nois' + response.message)
-						//tratar resposta da API, para preencher o card
-          }
-        }).catch((error) => response.json())
-        .catch(error => {
-          Alert.alert(title = 'Error: ' + response.message)
-          console.error(error);
-        });
-    });
-  }
-
-	saveData(){
-		analise = this.popularName, this.scientificName, this.precision, this.photo;
-		AsyncStorage.setItem('analise', analise);
-	}
-
-	getData(){
-		AsyncStorage.getItem('analise',this.props.analise.id);
-	}
-
-	render(){
+  
+  render(){
 		this.state.results.map((item, index) => {
 			return(
 			<View >
 					<ScrollView>
 						<View style = {{ flex: 1, padding: 2 }}>
-							<Card key={results.index}>
+							<Card key={index}>
 								<CardItem>
 									<Left>
 										<Icon name='book'/>
@@ -114,16 +73,14 @@ export default class Results extends Component
 }
 
 const styles = StyleSheet.create({
-  MainContainer:
-		{
+  MainContainer:{
 			flex: 1,
 			backgroundColor: '#eee',
 			justifyContent: 'center',
 			paddingTop: (Platform.OS == 'ios') ? 20 : 0
 		},
  
-		Animated_View_Style:
-		{
+		Animated_View_Style:{
 			flex: 1, 
 			justifyContent: 'center',
     },

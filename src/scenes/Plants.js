@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, } from 'native-base';
-import { List, ListItem, Icon } from "react-native-elements";
+import { List, ListItem, Icon, Text } from "react-native-elements";
 import { StyleSheet, Keyboard, View, FlatList } from 'react-native';
 import SearchHeader from './SearchHeader';
 import SearchBody from './SearchBody';
@@ -27,10 +27,19 @@ export default class Plants extends Component {
 			"scientificName": "Malus Domestica",
 			"commonName": plantCommomName,
 		}]
-		fetch('http://10.0.2.2:5000/api/gyresources/plants/?action=search&id=1&scientificName=Malus%20Domestica&commonName=' + this.state.plantCommomName + '&pageSize=10&offset=10', {
+		fetch('http://10.0.2.2:5000/api/gyresources/plants/', {
+			method: 'GET',
 			headers: {
-				Accept: 'application/json'
+				Accept: 'application/json',
 			},
+			body: JSON.stringify({
+				action: 'search',
+				id: 1,
+				scientificName: ' ',
+				commonName: this.state.plantCommomName,
+				pageSize: 10,
+				offset: 1
+			})
 		}).then((response) => response.json())
 			.then(response => {
 				if (response.status_code == 200 || response.status_code == 201) {
@@ -56,12 +65,11 @@ export default class Plants extends Component {
 		if (this.state.plantFound) {
 			return (<View>
 				<List>
-
 					<ListItem
 						roundAvatar
 						avatar={require('../macan.jpg')}
 						title={'Maça'}
-						onPress={() => { this.props.navigation.push('Search') }}
+						onPress={() => { this.props.navigation.push('Search'), { plantData: this.state.data } }}
 					/>
 				</List>
 			</View>);
@@ -87,6 +95,6 @@ export default class Plants extends Component {
 
 const styles = StyleSheet.create({
 	contentStyle: {
-		backgroundColor: "#ffffff"
+		backgroundColor: "#ffffff",
 	}
 })

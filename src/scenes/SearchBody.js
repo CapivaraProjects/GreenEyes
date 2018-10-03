@@ -15,7 +15,7 @@ class SearchBody extends Component {
   };
 
   render() {
-    const plantData = this.props.plantData;
+    const plantData = this.props.screenProps.plantData
     var plantName = 'Tomate';
     return (
       <Content style={styles.container}>
@@ -31,7 +31,7 @@ class SearchBody extends Component {
             <Icon name='description'/><Text h4>Descrição da Planta</Text>
           </ListItem>
         <View style={styles.listDescribe}>
-          <Text>{plantData ? plantData : 'Sem descrição'}</Text>
+          <Text>{this.props.screenProps.plantData.description ? this.props.screenProps.plantData.description : 'Sem descrição'}</Text>
         </View>
         <ListItem itemDivider style={styles.listitem}>
             <Icon name='brightness-4'/><Text h4>Cultivo</Text>

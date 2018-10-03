@@ -32,7 +32,8 @@ export default class Login extends Component {
             title='Login'
             rounded
             onPress={() => {
-              this.auth();
+              //this.auth();
+              this.props.navigation.navigate('Main');
             }
             }>
           </Button>

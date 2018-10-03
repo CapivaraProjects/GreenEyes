@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {SearchBar} from 'react-native-elements';
+import { SearchBar } from 'react-native-elements';
 
 class SearchHeader extends Component {
 	render() {
@@ -7,11 +7,11 @@ class SearchHeader extends Component {
 			<SearchBar
 				round
 				lightTheme
+				platform='android'
 				onChangeText={this.props.onChangeText}
 				returnKeyType="search"
 				onSubmitEditing={this.props.plantSearch}
-				placeholder='Digite o nome da planta'
-			/>
+				placeholder='Digite o nome da planta'/>
 		);
 	}
 }
