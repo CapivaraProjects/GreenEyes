@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { Container, Content, } from 'native-base';
+import { Container } from 'native-base';
 import { List, ListItem, Icon, Text } from "react-native-elements";
-import { StyleSheet, Keyboard, View, FlatList } from 'react-native';
+import { StyleSheet, Keyboard, View } from 'react-native';
 import SearchHeader from './SearchHeader';
-import SearchBody from './SearchBody';
 
 export default class Plants extends Component {
 	static navigationOptions = {
@@ -12,76 +11,72 @@ export default class Plants extends Component {
 		),
 		header: null,
 	};
-
 	state = {
 		searchPlant: '',
-		plant: {},
-		plantFound: false
+		plant: [],
+		plantFound: false,
+		data: [],
 	}
 
 	plantSearch = () => {
-		Keyboard.dismiss()
+		Keyboard.dismiss();
 		const plantCommomName = this.state.searchPlant.toLowerCase();
-		const data = [{
-			"action": "search",
-			"scientificName": "Malus Domestica",
-			"commonName": plantCommomName,
-		}]
-		fetch('http://10.0.2.2:5000/api/gyresources/plants/', {
-			method: 'GET',
+		fetch('http://192.168.43.163:5000/api/gyresources/plants/?action=search&scientificName=%20&commonName=' + plantCommomName + '&pageSize=10&offset=0', {
 			headers: {
-				Accept: 'application/json',
-			},
-			body: JSON.stringify({
-				action: 'search',
-				id: 1,
-				scientificName: ' ',
-				commonName: this.state.plantCommomName,
-				pageSize: 10,
-				offset: 1
-			})
+				'Accept': 'application/json',
+			}
 		}).then((response) => response.json())
 			.then(response => {
 				if (response.status_code == 200 || response.status_code == 201) {
 					this.setState({
-						plant: response.message,
+						plant: response.commonName,
 						plantFound: true,
-						data: response.message
-					})
+						data: response
+					});
 				}
-			})
-			.catch((error) => {
+			}).catch((error) => {
 				console.error(error);
 				this.setState({ plantFound: false });
 			});
 	}
-	//first we have to bring the list with the result(s)
-	//after all inside of item of the list we can add a StackNavigator to bring the information of the plant
+	
 	renderPage = () => {
 		this.props.navigation.push('Search');
 	}
 
-	renderList = () => {
+	renderList(){
 		if (this.state.plantFound) {
-			return (<View>
-				<List>
-					<ListItem
-						roundAvatar
-						avatar={require('../macan.jpg')}
-						title={'Maça'}
-						onPress={() => { this.props.navigation.push('Search'), { plantData: this.state.data } }}
-					/>
-				</List>
-			</View>);
+			//{
+				//this.state.data.map((plant, index) => {
+					return (
+						<View>
+							<List>
+								<ListItem
+									roundAvatar
+									avatar={require('../logo.jpeg')}
+									title={'Tomate'}
+									onPress={() => { this.props.navigation.push('Search'), { plantData: this.state.plant } }}
+								/>
+							</List>
+						</View>
+					)
+				//}
+				//)
+			//}
 		}
 		else {
-			console.log("Planta não encontrada")
+			console.log("Planta não encontrada");
 		}
 	}
 
 	render() {
 		return (
 			<Container style={styles.contentStyle}>
+				<View
+					paddingTop={15}
+					padding={25}>
+					<Text h3 >Pesquisar</Text>
+				</View>
 				<SearchHeader
 					value={this.state.searchPlant}
 					onChangeText={(searchPlant) => this.setState({ searchPlant })}
@@ -97,4 +92,5 @@ const styles = StyleSheet.create({
 	contentStyle: {
 		backgroundColor: "#ffffff",
 	}
-})
+}
+);

@@ -8,7 +8,6 @@ import {
 	Right,
 	InputGroup,
 	Input,
-	Text,
 	Button,
 } from 'native-base';
 import {
@@ -19,7 +18,7 @@ import {
 	TouchableOpacity,
 	AsyncStorage, Alert
 } from 'react-native';
-import { Icon, Avatar } from 'react-native-elements';
+import { Icon, Avatar, Text } from 'react-native-elements';
 import img from '../thumbnails/user_icon.png'
 
 const Item = Picker.Item;
@@ -70,24 +69,24 @@ export default class User extends Component {
 		return (
 			<Container>
 				<Content style={styles.container}>
-					<Avatar
-						containerStyle={{ flex: 1, alignSelf: 'center', marginTop: 10 }}
-						xlarge
-						rounded
-						source={img}
-						activeOpacity={0}>
-					</Avatar>
+				<View 
+            paddingTop={15}
+            padding={25}>
+            <Text h3 >Preferências</Text>
+			</View>
 					<List style={{ marginTop: 10 }}>
 						<ListItem>
 							<InputGroup>
 								<Icon name="person" style={styles.iconStyle} />
-								<Text>_username_</Text>
+								<Text>test</Text>
 							</InputGroup>
 						</ListItem>
 						<ListItem>
 							<InputGroup>
 								<Icon name="email" style={styles.iconStyle} />
-								<Input placeholder="useremail@mail.com" />
+								{//<Input placeholder="email@mail.com" />
+								}
+								<Text>email@email.com</Text>
 							</InputGroup>
 						</ListItem>
 						<ListItem>
@@ -229,7 +228,7 @@ export default class User extends Component {
 	}
 
 	updateUser() {
-		fetch('http://10.0.2.2:5000/api/gyresources/users/', {
+		fetch('http://192.168.43.163:5000/api/gyresources/users/', {
 			method: 'PUT',
 			headers: {
 				'Accept': 'application/json',
@@ -258,7 +257,7 @@ export default class User extends Component {
 	}
 
 	sendEmail() {
-		fetch('http://10.0.2.2:5000/api/gyresources/messageservice/', {
+		fetch('http://192.168.43.163:5000/api/gyresources/messageservice/', {
 			method: 'POST',
 			headers: {
 				Accept: 'application/json',
@@ -362,6 +361,5 @@ const styles = StyleSheet.create({
 		backgroundColor: "#03A9F4"
 	}
 
-});
-
-
+}
+);

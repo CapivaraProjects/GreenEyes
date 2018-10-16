@@ -24,8 +24,6 @@ export default class Results extends Component
         isOpen: false,
         isDisabled: false,
       }
-    this.animatedValue = new Animated.Value(0);
-		this.Array_Value_Index = 1;
 	}
 	
 	static navigationOptions = {
@@ -143,4 +141,5 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150
   }  
-});
+}
+);

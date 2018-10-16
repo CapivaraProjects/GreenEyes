@@ -13,8 +13,9 @@ import {
   Alert,
   Button,
   PixelRatio,
+  ProgressBarAndroid
 } from 'react-native';
-import OpenCV from '../NativeModules/OpenCV';
+//import OpenCV from '../NativeModules/OpenCV';
 import { CardList } from 'react-native-card-list';
 import { Right } from 'native-base';
 
@@ -23,15 +24,28 @@ export default class Analisys extends Component {
     super();
     this.state = {
       Disable_Button: false,
+      analisys1: 'Processando imagem!',
+      analisys2: 'Processando imagem!',
+      analisys3: 'Processando imagem!',
+      percent1: 'Ver Mais',
+      percent2: 'Ver Mais',
+      percent3: 'Ver Mais',
       isOpen: false,
       isDisabled: false,
       cardPhoto: null,
+      source64: '',
       source: null,
       analisysDate: '',
+      idResult: 0,
       add: false,
       statusAnalisys: false,
+      results: [],
       id: 0,
+      progress: 0,
+      indeterminate: false,
       title: "Analise ID: ",
+      timer: null,
+      aux: [],
       cards: [],
       cardes: [{
         id: "0",
@@ -69,7 +83,7 @@ export default class Analisys extends Component {
     ImagePicker.showImagePicker(options, (response) => {
       console.log('Response = ', response);
       let source = { uri: response.uri };
-      this.setState({ cardPhoto: source, add: true, analisysDate: new Date().getDate() + '/' + new Date().getMonth() + '/' + new Date().getFullYear() });
+      this.setState({ cardPhoto: source, add: true, source64: response.data, analisysDate: new Date().getDate() + '/' + new Date().getMonth() + '/' + new Date().getFullYear() });
       this.setState(this.state.cards[this.state.id] = {
         id: this.state.id.toString(),
         title: 'Analise id: ' + this.state.id,
@@ -77,48 +91,97 @@ export default class Analisys extends Component {
         content: <View>
           <Text h4>Doenças detectadas: </Text>
           <View style={styles.analisys}>
-            <Icon name='bug-report'></Icon>
-            <Text> 84.5% _nome_doença_1</Text>
-            <Right><Text style={{ color: 'blue' }} onPress={() => {
-              this.props.navigation.navigate('Results');
-            }
-            }>Ver Mais</Text></Right>
-          </View>
-          <View style={styles.analisys}>
-            <Icon name='bug-report'></Icon>
-            <Text> 32.1% _nome_doença_2</Text>
-            <Right><Text style={{ color: 'blue' }}
-              onPress={() => {
-                this.props.navigation.navigate('Results');
-              }
-              }>Ver Mais</Text></Right>
-          </View>
-          <View style={styles.analisys}>
-            <Icon name='bug-report'></Icon>
-            <Text> 9.2% _nome_doença_3</Text>
+            <Icon backgroundColor='transparent' name='bug-report'></Icon>
+            <Text> {this.state.analisys1}</Text>
+
             <Right>
-              <Text style={{ color: 'blue' }}
-                onPress={() => {
-                  this.props.navigation.navigate('Results');
-                }
-                }>Ver Mais</Text>
+              <View flexDirection='row'>
+                <ProgressBarAndroid
+                  styleAttr="Small"
+                  progress={this.state.progress} />
+                <Text style={{ color: 'blue' }} onPress={() => {
+                  this.setState({
+                      analisys1: "Tetranychus",
+                      analisys2: "Alternaria",
+                      analisys3: "Healthy",
+                      percent1: "84.3%",
+                      percent2: "32.1%",
+                      percent3: "8.0%"
+                    })
+                  //this.props.navigation.navigate('Results', { disease: [] });
+                }}> {this.state.percent1}</Text>
+              </View>
             </Right>
           </View>
-          <Text h4>Informações adicionais:</Text>
-          <Text>Saiba que a sua análise além de lhe ajudar a identificar a doença que
+          <View style={styles.analisys}>
+            <Icon name='bug-report'></Icon>
+            <Text> {this.state.analisys2}</Text>
+            <Right>
+              <View flexDirection='row'>
+                <ProgressBarAndroid
+                  styleAttr="Small"
+                  progress={this.state.progress} />
+                <Text style={{ color: 'blue' }}
+                  onPress={() => {
+                    this.setState({
+                      analisys1: "Tetranychus",
+                      analisys2: "Alternaria",
+                      analisys3: "Healthy",
+                      percent1: "84.3%",
+                      percent2: "32.1%",
+                      percent3: "8.0%"
+                    })
+                    //this.props.navigation.navigate('Results', { disease: [] });
+                  }
+                  }> {this.state.percent2}</Text>
+              </View>
+            </Right>
+          </View>
+          <View style={styles.analisys}>
+            <Icon name='bug-report'></Icon>
+            <Text> {this.state.analisys3}</Text>
+            <Right>
+              <View flexDirection='row'>
+                <ProgressBarAndroid
+                  styleAttr="Small"
+                  progress={this.state.progress} />
+                <Text style={{ color: 'blue' }}
+                  onPress={() => {
+                    this.setState({
+                      analisys1: "Tetranychus",
+                      analisys2: "Alternaria",
+                      analisys3: "Healthy",
+                      percent1: "84.3%",
+                      percent2: "32.1%",
+                      percent3: "8.0%"
+                    });
+                    //this.props.navigation.navigate('Results', { disease: [] });
+                  }
+                  }> {this.state.percent3}</Text>
+              </View>
+            </Right>
+          </View>
+        {
+          //<Button title="Imagem" onPress={() => this.sendImage()}></Button>
+          //<Button title="Analise" onPress={() => this.addAnalysis()}></Button>
+          //<Button title="Cade resposta?" onPress={() => this.sendImage()}></Button>
+        }
+          <Text h4>Você sabia?</Text>
+          <Text>A sua análise além de lhe ajudar a identificar a doença que
           está afetando o seu cultivo, está contribuindo junto com o crescimento
-                    de nosso banco de imagens! </Text>
+                    de nosso banco de imagens?! </Text>
           <Text>Portanto, desfrute o máximo que o
                     Aplicativo GreenEyes pode te oferecer!</Text>
         </View>
       });
       this.setState({ id: parseInt(this.state.id) + 1 });
+      this.sendImage();
     });
   }
 
   sendImage() {
     console.log("log do sendImage:" + this.props.screenProps.token.token)
-    fetch('http://10.0.2.2:5000/api/gyresources/images/', {
+    fetch('http://192.168.43.163:5000/api/gyresources/images/', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -136,7 +199,7 @@ export default class Analisys extends Component {
     }).then((response) => response.json())
       .then(response => {
         if (response.status_code == 200 || response.status_code == 201) {
-          Alert.alert(title = 'Imagem enviada!: ' + response.message)
+          Alert.alert(title = 'Imagem enviada!')
           this.setState({ idImagem: response.response.id });
           console.log(response.status_code + ',' + response.message)
           this.addAnalysis();
@@ -150,7 +213,7 @@ export default class Analisys extends Component {
 
   addAnalysis() {
     console.log("Cheguei no addAnalisys")
-    fetch('http://10.0.2.2:5000/api/gyresources/analysis/', {
+    fetch('http://192.168.43.163:5000/api/gyresources/analysis/', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -160,12 +223,15 @@ export default class Analisys extends Component {
       body: JSON.stringify({
         id: 0,
         idImage: this.state.idImagem,
-        idClassifier: 1
+        idClassifier: 1,
+        idUser: 4
       }),
     }).then((response) => response.json())
       .then(response => {
-        this.analisysComplete(response.id)
         console.log('Token: ' + this.props.screenProps.token.token + ', IdImage: ' + this.state.idImagem + ', Message from API: ' + response.message)
+        this.setState({ idResult: response.response.id });
+        Alert.alert(title='Realizando análise!')
+        this.analisysComplete();
       }).catch((error) => response.json())
       .catch(error => {
         Alert.alert(title = 'Error: ')
@@ -175,7 +241,7 @@ export default class Analisys extends Component {
 
   async analisysComplete() {
     console.log("Log do analisysComplete")
-    fetch('http://10.0.2.2:5000/api/gyresources/analysisResult', {
+    fetch('http://192.168.43.163:5000/api/gyresources/analysis', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -183,39 +249,77 @@ export default class Analisys extends Component {
         'dataType': 'json'
       },
       body: JSON.stringify({
-        action: 'search',
-        idAnalysis: this.response.id,
-        idDisease: 1,
-        score: 0,
-        frame: '100,100,128,128',
-        pageSize: 10,
-        offset: 0
+        action: 'searchByID',
+        idAnalysis: this.state.idResult
       })
     }).then(response => response.json())
       .then(response => {
         if (response.status_code == 200 || response.status_code == 201) {
-          if (response.response == "") {
+          if (response.response.analisys_results == "") {
             this.analisysComplete();
           }
           else {
-
+            this.setState({
+              aux: response.analisys_results
+            });
+            const sort = Object.keys(this.state.aux.score).sort(function (a, b) { return this.state.aux.score[b] - this.state.aux.score[a] })
+            this.setState({
+              analisys1: "Tetranychus",
+              analisys2: "Alternaria",
+              analisys3: "Healthy",
+              //analisys1:sort[0].disease.scientificName.toString(),
+              //analisys2:sort[1].disease.scientificName.toString(),
+              //analisys3:sort[2].disease.scientificName.toString(),
+              percent1: sort[0].toString(),
+              percent2: sort[1].toString(),
+              percent3: sort[2].toString(),
+            });
           }
         }
       })
+  }
+
+ 
+  setPercent = () => {
+    setTimeout(function(){
+      this.setState({
+        analisys1: "Tetranychus",
+        analisys2: "Alternaria",
+        analisys3: "Healthy",
+        percent1: "84.3%",
+        percent2: "32.1%",
+        percent3: "8.0%"
+      })
+    }.bind(this),2000);
+  }
+
+  animate() {
+    let progress = 0;
+    this.setState({ progress });
+    setTimeout(() => {
+      this.setState({ indeterminate: false });
+      setInterval(() => {
+        progress += Math.random() / 5;
+        if (progress > 1) {
+          progress = 1;
+        }
+        this.setState({ progress });
+      }, 500);
+    }, 1500);
   }
 
   render() {
     return (
       <View style={styles.MainContainer}>
         <ScrollView>
-          <View 
+          <View
             paddingTop={15}
             padding={25}>
             <Text h3 >Minhas Análises</Text>
+
           </View>
           <CardList cards={this.state.cards} />
         </ScrollView>
-
         <ActionButton
           buttonColor="#00BCD4"
           renderIcon={() => <Icon name="add" />}
@@ -320,4 +424,5 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150
   }
-});
+}
+);

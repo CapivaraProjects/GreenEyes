@@ -13,14 +13,14 @@ export default class Howto extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={{ padding: 25 }}>
+        <View style={{ padding: 25, paddingTop: 15}}>
           <Text h3>Seja Bem vindo ao GreenEyes</Text>
           <Text>
             Leia atentamente as instruções antes de realizar a sua analise!
         </Text>
         <View flexDirection={'row'}>
           <Text h4 style={styles.description2}>Pesquisar </Text>
-          <Icon onPress={()=>this.props.navigation.navigate('PlantsController')} name='search'></Icon>
+          <Icon paddingTop={2} onPress={()=>this.props.navigation.navigate('PlantsController')} name='search'></Icon>
           </View>
           <Text>
             Nessa seção você consegue procurar por plantas e obter todas as informações
@@ -91,4 +91,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingTop: 9,
   }
-});
+}
+);

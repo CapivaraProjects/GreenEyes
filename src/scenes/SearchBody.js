@@ -6,7 +6,7 @@ import { Image,
   StyleSheet,
   ScrollView
   } from 'react-native';
-import img from '../macan.jpg'
+import img from '../tomate2.jpg'
 
 class SearchBody extends Component {
   static navigationOptions = {
@@ -15,13 +15,13 @@ class SearchBody extends Component {
   };
 
   render() {
-    const plantData = this.props.screenProps.plantData
-    var plantName = 'Tomate';
+    //const plantData = this.props.screenProps.plantData
+    var plantData = 'Tomate';
     return (
       <Content style={styles.container}>
         <Tile
           imageSrc={img}
-          title={plantName ? plantName : 'Sem informações'}
+          title={this.plantData ? this.plantData : 'Tomate'}
           activeOpacity={0}>
           <View styleName="content">
             <Text>Nome científico: Malus Domestica</Text>
@@ -31,7 +31,7 @@ class SearchBody extends Component {
             <Icon name='description'/><Text h4>Descrição da Planta</Text>
           </ListItem>
         <View style={styles.listDescribe}>
-          <Text>{this.props.screenProps.plantData.description ? this.props.screenProps.plantData.description : 'Sem descrição'}</Text>
+          <Text>{plantData ? plantData : 'Sem descrição'}</Text>
         </View>
         <ListItem itemDivider style={styles.listitem}>
             <Icon name='brightness-4'/><Text h4>Cultivo</Text>

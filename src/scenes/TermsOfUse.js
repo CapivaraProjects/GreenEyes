@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Icon, Text, Button} from 'react-native-elements'
+import { Icon, Text, Button, Overlay} from 'react-native-elements'
 import {
   AppRegistry,
   View,
@@ -9,13 +9,16 @@ import {
 } from 'react-native';
 
 export default class TermsOfUse extends Component {
+
+  state={
+    isVisible: true
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <Modal style={[styles.modal, styles.modal3]}
-          position={"center"}
-          ref={"modal3"}>
-          <View>
+      <View>
+      <Overlay
+      isVisible={this.state.isVisible}>
             <ScrollView style={{padding: 20}}>
               <Text h3>Termos e Condições de uso</Text>
               <Text>Olá. Seja bem-vindo aos nossos Termos e Condições de Uso. Eles são importantes e afetam seus direitos legais, portanto, além deles, também leia atentamente nossa Política de Privacidade e outros termos mencionados nesse documento.</Text>
@@ -100,8 +103,7 @@ export default class TermsOfUse extends Component {
           </Text>
           <Button title={"Aceitar"}></Button>
             </ScrollView>
-          </View>
-        </Modal>
+      </Overlay>
       </View>
     );
   }
@@ -118,24 +120,5 @@ const styles = StyleSheet.create({
 
   description: {
     alignSelf: 'center'
-  },
-  modal: {
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-
-  modal3: {
-    height: 300,
-    width: 300
-  },
-  itemStyle: {
-    fontSize: 15,
-    height: 75,
-    color: 'black',
-    textAlign: 'center',
-
-  },
-  picker: {
-    width: 200
   },
 });

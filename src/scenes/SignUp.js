@@ -68,7 +68,7 @@ export default class SignUp extends Component {
   createUser(){
     if(this.state.username != null & this.state.email != null){
        if(this.state.password == this.state.repassword){
-        fetch('http://10.0.2.2:5000/api/gyresources/users/', {
+        fetch('http://192.168.43.163:5000/api/gyresources/users/', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -98,9 +98,7 @@ export default class SignUp extends Component {
             idType: 1
           }
         }
-        Alert.alert(
-          title='Opa!',
-          'Não foi não '+response.status_code)
+        Alert.alert("Sucesso!", "Cadastrado com sucesso!");
       }).catch((error) => {
             console.error(error);
             Alert.alert(
@@ -140,4 +138,5 @@ const styles = StyleSheet.create({
       padding: 28
     },
 
-});
+}
+);

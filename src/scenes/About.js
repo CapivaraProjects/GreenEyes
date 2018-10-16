@@ -17,7 +17,7 @@ export default class About extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={{ padding: 25 }}>
+        <View style={{ padding: 25, paddingTop: 15}}>
           <Text h3>Sobre o projeto</Text>
           <Text>
             O projeto se originou a partir de um
@@ -128,4 +128,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingTop: 9,
   }
-});
+}
+);

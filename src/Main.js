@@ -9,6 +9,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import Analisys from './scenes/Analisys';
+import TermsOfUse from './scenes/TermsOfUse';
 
 export default class Main extends Component {
   constructor(props){
@@ -66,6 +67,9 @@ const AppTabNavigator = TabNavigator({
   tabBarOptions: {
     activeTintColor: "#212121",
     inactiveTintColor: "#FFFFFF",
+    indicatorStyle:{
+      height:0
+    },
     labelStyle:{
       fontSize:10
     },
@@ -77,7 +81,7 @@ const AppTabNavigator = TabNavigator({
       header: null,
       androidStatusBarColor:'#689F38'},
     showLabel: true,
-    showIcon: true
+    showIcon: true,
   },
   
 },

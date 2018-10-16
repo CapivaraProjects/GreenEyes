@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Image, View, StyleSheet, Alert } from 'react-native';
 import { Button, FormLabel, FormInput, FormValidationMessage, Text } from 'react-native-elements'
+import { TextField } from 'react-native-material-textfield'
 
 export default class Login extends Component {
   state = {
@@ -22,10 +23,15 @@ export default class Login extends Component {
         </View>
 
         <View style={styles.formContainer}>
-          <FormLabel>Usuário</FormLabel>
-          <FormInput activeOpacity={0.7} onChangeText={(value) => this.setState({ username: value })} />
-          <FormLabel>Senha</FormLabel>
-          <FormInput secureTextEntry={true} onChangeText={(value) => this.setState({ password: value })} />
+          <TextField
+            label='Usuário'
+            returnKeyType='next'
+            onChangeText={(value) => this.setState({ username: value })} />
+          <TextField
+            label='Senha'
+            secureTextEntry={true}
+            onChangeText={(value) => this.setState({ password: value })} />
+          <View></View>
           <Button
             backgroundColor='#83f02f'
             borderRadius={4}
@@ -70,7 +76,7 @@ export default class Login extends Component {
     else {
       window.btoa = window.btoa || require('Base64').btoa;
       creds = btoa(this.state.username + ":" + this.state.password);
-      fetch('http://10.0.2.2:5000/api/gyresources/token/', {
+      fetch('http://192.168.43.163:5000/api/gyresources/token/', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -88,7 +94,7 @@ export default class Login extends Component {
         })
         .catch((error) => {
           console.error(error);
-        })
+        });
     }
   }
 }
@@ -120,7 +126,8 @@ const styles = StyleSheet.create({
   },
 
   formContainer: {
-    padding: 28
+    padding: 28,
+    margin: 8,
   },
 
   buttonContainer: {
@@ -151,4 +158,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '700'
   }
-});
+}
+);
