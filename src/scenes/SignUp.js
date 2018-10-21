@@ -44,10 +44,7 @@ export default class SignUp extends Component {
             borderRadius={4}
             title='Enviar'
             rounded
-            onPress={() => {
-              this.createUser();
-            }
-            }>
+            onPress={() => {this.createUser()}}>
         </Button>
         <View padding={5}></View>
         <Button
@@ -55,10 +52,7 @@ export default class SignUp extends Component {
             borderRadius={4}
             title='Já possui uma conta? Entre!'
             rounded
-            onPress={() => {
-              this.props.navigation.navigate('Login');
-            }
-            }>
+            onPress={() => {this.props.navigation.navigate('Login')}}>
         </Button>
         </View>
       </View>

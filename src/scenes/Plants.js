@@ -21,7 +21,8 @@ export default class Plants extends Component {
 	plantSearch = () => {
 		Keyboard.dismiss();
 		const plantCommomName = this.state.searchPlant.toLowerCase();
-		fetch('http://192.168.43.163:5000/api/gyresources/plants/?action=search&scientificName=%20&commonName=' + plantCommomName + '&pageSize=10&offset=0', {
+		//192.168.43.163
+		fetch('http://10.0.2.2:5000/api/gyresources/plants/?action=search&scientificName=%20&commonName=' + plantCommomName + '&pageSize=10&offset=0', {
 			headers: {
 				'Accept': 'application/json',
 			}

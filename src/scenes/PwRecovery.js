@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { StackNavigator } from 'react-navigation';
 import {
-  AppRegistry,
-  TextInput,
-  Image,
   View,
   StyleSheet,
+  Alert
 } from 'react-native';
 import { FormInput, FormLabel, Button, Text } from 'react-native-elements'
+import { TextField } from 'react-native-material-textfield'
+import store from 'react-native-simple-store';
 
 export default class PwRecovery extends Component {
   static navigationOptions =
@@ -16,7 +15,8 @@ export default class PwRecovery extends Component {
     };
 
   state = {
-    email: ''
+    email: '',
+    storedEmail: '',
   }
 
   render() {
@@ -24,25 +24,55 @@ export default class PwRecovery extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.logoContainer}>
-          <Image style={styles.logo}
-            source={require('GreenEyes/src/logo.jpeg')} />
+          <Text h2>Recuperar senha</Text>
         </View>
         <View style={styles.formContainer}>
-          <FormLabel>E-mail</FormLabel>
-          <FormInput activeOpacity={0.7} onChangeText={(value) => this.setState({ email: value })} />
+          <TextField
+            label='Insira o seu e-mail'
+            returnKeyType='next'
+            onChangeText={(value) => this.setState({ email: value })} />
           <Button
             backgroundColor='#83f02f'
             borderRadius={4}
             title='Enviar'
             rounded
-            onPress={() => {
-              this.createUser();
-            }
-            }>
+            onPress={() => {this.sendEmail()}}>
           </Button>
         </View>
       </View>
     );
+  }
+
+  sendEmail() {
+    store.get(userinfo).then((res) => this.setState({storedEmail: res.email}));
+    if(this.state.email == this.state.storedEmail)
+    {
+      console.log("Email confirmed");
+    var i = parseInt(Math.random() * ((9999 - 1000) + 1));
+    this.setState({ generatedCode: i });
+    console.log("Code generated, sending emai.");
+    fetch('http://192.168.43.163:5000/api/gyresources/messages/', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userEmail: this.state.email,
+        coreVerification: this.state.generatedCode,
+      }),
+    }).then(response => response.json())
+      .then(response => {
+        Alert.alert(title = 'Sucesso!', 'Enviamos uma nova senha a você!');
+        console.log("E-mail sended.");
+        console.log(response);
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+    else{
+      Alert.alert("Nenhum usuário com esse e-mail, logou no aplicativo")
+    }
   }
 }
 

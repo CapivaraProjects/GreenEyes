@@ -19,9 +19,10 @@ export default class Main extends Component {
         title: 'Main',
     };
     render() {
+      console.log(this.props.navigation.state);
       return (
         <AppTabNavigator screenProps={{token: this.props.navigation.state.params}}/>
-      );
+    );
   }
 }
 

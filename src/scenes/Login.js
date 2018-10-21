@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Image, View, StyleSheet, Alert } from 'react-native';
 import { Button, FormLabel, FormInput, FormValidationMessage, Text } from 'react-native-elements'
 import { TextField } from 'react-native-material-textfield'
+import store from 'react-native-simple-store';
 
 export default class Login extends Component {
   state = {
@@ -39,27 +40,19 @@ export default class Login extends Component {
             rounded
             onPress={() => {
               //this.auth();
-              this.props.navigation.navigate('Main');
-            }
-            }>
+              this.props.navigation.navigate('Main')}}>
           </Button>
           <View padding={5}></View>
           <Button
             backgroundColor='#03A9F4'
             title='Cadastre-se'
             rounded
-            onPress={() => {
-              this.props.navigation.navigate('SignUp');
-            }
-            }>
+            onPress={() => {this.props.navigation.navigate('SignUp')}}>
           </Button>
           <View
             alignItems="center"
             padding={15}>
-            <Text
-              onPress={() => {
-                this.props.navigation.navigate('PwRecovery');
-              }}>Esqueceu sua senha?</Text>
+            <Text onPress={() => {this.props.navigation.navigate('PwRecovery')}}>Esqueceu sua senha?</Text>
           </View>
         </View>
       </View>
@@ -89,7 +82,8 @@ export default class Login extends Component {
             this.props.navigation.navigate('Main', {
               token: response.response.token
             });
-            console.log("Logged successfully !");
+            store.push("userinfo", JSON.parse(response.response));
+            console.log("Logged successfully !"+ response.response.token);
           }
         })
         .catch((error) => {

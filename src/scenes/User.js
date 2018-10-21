@@ -16,7 +16,7 @@ import {
 	Picker,
 	TextInput,
 	TouchableOpacity,
-	AsyncStorage, Alert
+	Alert
 } from 'react-native';
 import { Icon, Avatar, Text } from 'react-native-elements';
 import img from '../thumbnails/user_icon.png'
@@ -69,24 +69,22 @@ export default class User extends Component {
 		return (
 			<Container>
 				<Content style={styles.container}>
-				<View 
-            paddingTop={15}
-            padding={25}>
-            <Text h3 >Preferências</Text>
-			</View>
+					<View
+						paddingTop={15}
+						padding={25}>
+						<Text h3 >Preferências</Text>
+					</View>
 					<List style={{ marginTop: 10 }}>
 						<ListItem>
 							<InputGroup>
 								<Icon name="person" style={styles.iconStyle} />
-								<Text>test</Text>
+								<Text> User</Text>
 							</InputGroup>
 						</ListItem>
 						<ListItem>
 							<InputGroup>
 								<Icon name="email" style={styles.iconStyle} />
-								{//<Input placeholder="email@mail.com" />
-								}
-								<Text>email@email.com</Text>
+								<Text> test@email.com</Text>
 							</InputGroup>
 						</ListItem>
 						<ListItem>
@@ -94,7 +92,7 @@ export default class User extends Component {
 								<Icon name="language" style={styles.iconStyle} />
 								<View style={styles.languageContainer}>
 									<View>
-										<Text>Português</Text>
+										<Text> Português</Text>
 									</View>
 									<Right>
 										<TouchableOpacity
@@ -105,11 +103,10 @@ export default class User extends Component {
 								</View>
 							</InputGroup>
 						</ListItem>
-
 					</List>
 					<Button style={{ alignSelf: 'center', marginTop: 20, marginBottom: 20, backgroundColor: "#03A9F4" }}
 						onPress={() => this.refs.modalPassword.open()}>
-						<Text>Alterar Senha</Text>
+						<Text style={styles.buttonText}>   Alterar Senha   </Text>
 					</Button>
 				</Content>
 				<Modal
@@ -139,9 +136,7 @@ export default class User extends Component {
 					isDisabled={this.state.isDisabled}>
 
 					<View style={styles.blockStyleOld}>
-						<Text style={styles.inputLabel}>
-							Alteração de senha
-										</Text>
+						<Text style={styles.inputLabel}>Alteração de senha</Text>
 						<TextInput
 							style={styles.input}
 							secureTextEntry={true}
@@ -154,11 +149,11 @@ export default class User extends Component {
 							onPress={() => {
 								this.refs.modalNewPassword.open()
 							}}>
-							<Text>Confirmar</Text>
+							<Text style={styles.buttonText}>   Confirmar   </Text>
 						</Button>
 						<TouchableOpacity
 							onPress={() => this.refs.modalForgotten.open()}>
-							<Text style={styles.languageButtonText}>Esqueci minha senha</Text>
+							<Text style={styles.buttonText}>Esqueci minha senha</Text>
 						</TouchableOpacity>
 					</View>
 				</Modal>
@@ -196,7 +191,7 @@ export default class User extends Component {
 								this.updateUser();
 							}
 							}>
-							<Text style={styles.buttonText}>Confirmar</Text>
+							<Text style={styles.buttonText}>   Confirmar   </Text>
 						</Button>
 					</View>
 				</Modal>
@@ -214,12 +209,12 @@ export default class User extends Component {
 						<Button style={styles.buttonStyle}
 							color="#ADFF2F"
 							onPress={() => {
-								this.sendEmail();
+								//this.sendEmail();
 								this.refs.modalForgotten.close();
 								this.refs.modalPassword.close();
 							}
 							}>
-							<Text style={styles.buttonText}>Enviar</Text>
+							<Text style={styles.buttonText}>   Enviar   </Text>
 						</Button>
 					</View>
 				</Modal>
@@ -269,11 +264,11 @@ export default class User extends Component {
 			}),
 		}).then(response => response.json())
 			.then(response => {
-			Alert.alert(title = 'Sucesso!', 'Enviamos uma nova senha a você!');
-			console.log(response);
-		}).catch((error) => {
-			console.error(error);
-		});
+				Alert.alert(title = 'Sucesso!', 'Enviamos uma nova senha a você!');
+				console.log(response);
+			}).catch((error) => {
+				console.error(error);
+			});
 	}
 }
 
@@ -359,6 +354,10 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 		marginBottom: 20,
 		backgroundColor: "#03A9F4"
+	},
+	buttonText: {
+		color: 'white'
+
 	}
 
 }
