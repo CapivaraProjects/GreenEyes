@@ -386,7 +386,7 @@ export default class Analisys extends Component {
           <View
             paddingTop={15}
             padding={25}>
-            <Text h3 >Minhas Análises</Text>
+            <Text h3 >Minhas Análises </Text>
 
           </View>
           <CardList cards={this.state.cards} />
@@ -468,7 +468,6 @@ const styles = StyleSheet.create({
     height: 300,
     width: 300
   },
-
   text: {
     color: "black",
     fontSize: 22
