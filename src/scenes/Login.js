@@ -1,125 +1,106 @@
 import React, { Component } from 'react';
-import { TextInput,
-  Text,
-  Image,
-  View, 
-  StyleSheet,
-  Alert,
-  TouchableOpacity} from 'react-native';
-//import sjcl from 'sjcl';
+import { Image, View, StyleSheet, Alert } from 'react-native';
+import { Button, FormLabel, FormInput, FormValidationMessage, Text } from 'react-native-elements'
+import { TextField } from 'react-native-material-textfield'
+import store from 'react-native-simple-store';
 
 export default class Login extends Component {
   state = {
-    username: 'teste',
-    usernameBD: null,
-    password: 'teste',
-    passwordBD: null
-  }
-  
-  static navigationOptions =
-  {
-     title: 'Login',
+    username: 'test',
+    password: 'test',
+  };
+
+  navigationOptions = {
+    title: 'Login',
   };
 
   render() {
-    const {navigate} = () => this.props.navigation;
+    const { navigate } = () => this.props.navigation;
     return (
       <View style={styles.container}>
         <View style={styles.logoContainer}>
-          <Image
-          style={styles.logo}
-          source={require('GreenEyes/src/logo.jpeg')}/>
+          <Image style={styles.logo}
+            source={require('../logo.jpeg')} />
         </View>
-        
+
         <View style={styles.formContainer}>
-          <TextInput
-            style={styles.input}
-            autoCapitalize="none" 
-            returnKeyType="next" 
-            placeholder='Usuário'
-            onChangeText={(value) => this.setState({username: value})}
-          />
-          <TextInput
-            style={styles.input}
+          <TextField
+            label='Usuário'
+            returnKeyType='next'
+            onChangeText={(value) => this.setState({ username: value })} />
+          <TextField
+            label='Senha'
             secureTextEntry={true}
-            placeholder="Senha"
-            onChangeText={(value) => this.setState({password: value})}
-          />
-          <TouchableOpacity style={styles.buttonContainer}
-              color= "#ADFF2F"
-              onPress={() =>
-                {
-                    //this.auth();
-                    this.props.navigation.navigate('Main');
-                }
-              }>
-             <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
-          <View style={styles.buttonGroup}>
-            <TouchableOpacity style={styles.buttonSignUp}
-                color= "#ADFF2F"
-                onPress={() =>
-                  {
-                      this.props.navigation.navigate('SignUp');
-                  }
-                }>
-                <Text style={styles.buttonText}>Cadastre-se</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.buttonPassRecovery}
-                color= "#ADFF2F"
-                onPress={() =>
-                  {
-                      this.props.navigation.navigate('PwRecovery');
-                  }
-                }>
-                <Text style={styles.buttonText}>Esqueceu sua senha?</Text>
-            </TouchableOpacity>
+            onChangeText={(value) => this.setState({ password: value })} />
+          <View></View>
+          <Button
+            backgroundColor='#83f02f'
+            borderRadius={4}
+            title='Login'
+            rounded
+            onPress={() => {
+              //this.auth();
+              this.props.navigation.navigate('Main')}}>
+          </Button>
+          <View padding={5}></View>
+          <Button
+            backgroundColor='#03A9F4'
+            title='Cadastre-se'
+            rounded
+            onPress={() => {this.props.navigation.navigate('SignUp')}}>
+          </Button>
+          <View
+            alignItems="center"
+            padding={15}>
+            <Text onPress={() => {this.props.navigation.navigate('PwRecovery')}}>Esqueceu sua senha?</Text>
           </View>
         </View>
       </View>
     );
   }
-  
 
-auth(){
-  var Base64 = require('js-base64').Base64;
-    if(this.state.username == null || this.state.password == null){ 
+  auth() {
+    if (this.state.username == null || this.state.password == null) {
       Alert.alert(
-      title='Ops!',
-      'Preencha os campos corretamente!')
+        title = 'Ops!',
+        'Preencha os campos corretamente!')
+      console.log("Fields incorrectly filled")
     }
-    else{
-      //aux = sjcl.encrypt(this.state.password,'salt');  
-      creds = Base64.encode(this.state.username+":"+aux)
-      fetch('http://10.0.2.2:5000/api/gyresources/token', {       
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Basic '+creds
-      },
-      })
-        .then((response) => (response.text())
-          .then((text) =>{
-            Alert.alert(title='alo'+text)
-            this.props.navigation.navigate('Main');
-          })
-            .catch((error) => {
-            console.error(error);
-          })
-      )
+    else {
+      window.btoa = window.btoa || require('Base64').btoa;
+      creds = btoa(this.state.username + ":" + this.state.password);
+      fetch('http://192.168.43.163:5000/api/gyresources/token/', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic ' + creds
+        },
+      }).then(response => response.json())
+        .then(response => {
+          if (response.status_code == 200) {
+            this.props.navigation.navigate('Main', {
+              token: response.response.token
+            });
+            store.push("userinfo", JSON.parse(response.response));
+            console.log("Logged successfully !"+ response.response.token);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }
-  } 
+  }
 }
 
 const styles = StyleSheet.create({
-  container:{
-    backgroundColor:'#FFF',
-    flex: 1   
+  container: {
+    backgroundColor: '#FFF',
+    flex: 1
   },
 
-  logoContainer:{
-    alignItems:'center',
+  logoContainer: {
+    alignItems: 'center',
     flexGrow: 1,
     justifyContent: 'center'
   },
@@ -132,17 +113,18 @@ const styles = StyleSheet.create({
     borderRadius: 150
   },
 
-  input:{
+  input: {
     height: 50,
     marginBottom: 20,
     paddingHorizontal: 10,
   },
 
-  formContainer:{
-    padding: 28
+  formContainer: {
+    padding: 28,
+    margin: 8,
   },
 
-  buttonContainer:{
+  buttonContainer: {
     backgroundColor: '#83f02f',
     paddingVertical: 15,
     marginBottom: 10
@@ -150,24 +132,25 @@ const styles = StyleSheet.create({
 
   buttonSignUp: {
     backgroundColor: '#03A9F4',
-    width:175,
+    width: 175,
     paddingVertical: 15,
   },
 
-  buttonPassRecovery:{
+  buttonPassRecovery: {
     backgroundColor: '#03A9F4',
-    width:170,
+    width: 170,
     paddingVertical: 15,
     marginLeft: 10
   },
 
-  buttonGroup:{
+  buttonGroup: {
     flexDirection: 'row',
   },
-  
-  buttonText:{
+
+  buttonText: {
     color: '#fff',
     textAlign: 'center',
     fontWeight: '700'
   }
-});
+}
+);

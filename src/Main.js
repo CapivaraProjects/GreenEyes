@@ -1,72 +1,91 @@
 import {TabNavigator} from 'react-navigation'
 import React, { Component } from 'react';
-import Plants from './scenes/Plants';
+import PlantsController from './scenes/PlantsController';
 import Howto from './scenes/Howto';
 import User from './scenes/User';
 import About from './scenes/About';
-import Analisys from './scenes/Analisys';
-import {
+import AnalisysController from './scenes/AnalisysController';
+import { 
   StyleSheet,
-  Text,
-  View
 } from 'react-native';
-
+import Analisys from './scenes/Analisys';
+import TermsOfUse from './scenes/TermsOfUse';
 
 export default class Main extends Component {
-    static navigationOptions =
-    {
+  constructor(props){
+    super(props);
+  }
+    static navigationOptions = {
         title: 'Main',
     };
     render() {
+      console.log(this.props.navigation.state);
       return (
-        <AppTabNavigator/>
-      );
+        <AppTabNavigator screenProps={{token: this.props.navigation.state.params}}/>
+    );
   }
 }
+
 
 const AppTabNavigator = TabNavigator({
   Howto:{
     screen: Howto,
+    navigationOptions: {
+      tabBarLabel: "Ajuda",
+    },
+    tabBarOptions: '#FFFFFF'
   },
-  Plants:{
-    screen: Plants,
+  PlantsController:{
+    screen: PlantsController,
+    navigationOptions:{
+      tabBarLabel: 'Pesquisar'
+    },
   },
-  Analisys:{
-    screen: Analisys,
+  AnalisysController:{
+    screen: AnalisysController,
+    navigationOptions:{
+      tabBarLabel: 'Análises'
+    }
   },
   User:{
     screen: User,
+    navigationOptions:{
+      tabBarLabel: 'Usuário'
+    }
   },
   About:{
     screen: About,
+    navigationOptions:{
+      tabBarLabel: 'Sobre'
+    }
   },
   },
 {
   animationEnabled: true,
-  swipeEnabled: true,
+  swipeEnabled: false,
   tabBarPosition: "bottom",
   backgroundColor: "#8BC34A",
   tabBarOptions: {
     activeTintColor: "#212121",
-    inactiveTintColor: "#DCEDC8",
-    style: {
-      backgroundColor: "#8BC34A"
+    inactiveTintColor: "#FFFFFF",
+    indicatorStyle:{
+      height:0
     },
-    navigationOptions: {header: null,
+    labelStyle:{
+      fontSize:10
+    },
+    style: {
+      backgroundColor: "#8BC34A",
+      height: 56
+    },
+    navigationOptions: {
+      header: null,
       androidStatusBarColor:'#689F38'},
-    showLabel: false,
-    showIcon: true
+    showLabel: true,
+    showIcon: true,
   },
   
 },
 );
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-});
 
 
