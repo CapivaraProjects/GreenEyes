@@ -19,6 +19,7 @@ import {
 //import OpenCV from '../NativeModules/OpenCV';
 import { CardList } from 'react-native-card-list';
 import { Right } from 'native-base';
+import store from 'react-native-simple-store'
 
 export default class Analisys extends Component {
   constructor() {
@@ -26,10 +27,10 @@ export default class Analisys extends Component {
     this.state = {
       Disable_Button: false,
       i: null,
-      analisys1: 'Processando imagem!',
       idDisease1: 0,
       idDisease2: 0,
       idDisease3: 0,
+      analisys1: 'Processando imagem!',
       analisys2: 'Processando imagem!',
       analisys3: 'Processando imagem!',
       percent1: 'Ver Mais',
@@ -53,19 +54,8 @@ export default class Analisys extends Component {
       loading: true,
       aux: 0,
       cards: [],
-      cardes: [{
-        id: "0",
-        title: "Analise ID: 1",
-        picture: require('../ft.jpg'),
-        content: <Text>TOMATE</Text>
-      },
-      {
-        id: "1",
-        title: "Tomatew",
-        picture: require('../tomate.jpg'),
-        content: <Text>TESTE FODAA</Text>
-      }],
     }
+    const diseaseInfo = {id: 0};
   }
 
   static navigationOptions = {
@@ -147,13 +137,14 @@ export default class Analisys extends Component {
         </View>
       });
       this.setState({ id: parseInt(this.state.id) + 1 });
-      this.sendImage();
+      //this.sendImage();
+      this.iniciaConsulta();
     });
   }
 
   sendImage() {
     console.log("log do sendImage:" + this.props.screenProps.token.token)
-    fetch('http://192.168.43.163:5000/api/gyresources/images/', {
+    fetch('http://192.168.0.131:5000/api/gyresources/images/', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -184,7 +175,7 @@ export default class Analisys extends Component {
 
   addAnalysis() {
     console.log("Cheguei no addAnalisys")
-    fetch('http://192.168.43.163:5000/api/gyresources/analysis/', {
+    fetch('http://192.168.0.131:5000/api/gyresources/analysis/', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -195,44 +186,62 @@ export default class Analisys extends Component {
         id: 0,
         idImage: this.state.idImagem,
         idClassifier: 1,
-        idUser: 4
+        idUser: 1
       }),
     }).then((response) => response.json())
-      .then(response => {
+      .then(response => {      
+          console.log(response);
           this.analisysComplete();
-          console.log('Token: ' + this.props.screenProps.token.token + ', IdImage: ' + this.state.idImagem + ', Message from API: ' + response.message);
+          console.log('Token: ' + this.props.screenProps.token.token + ', Id: ' + this.state.idImagem + ', Message from API: ' + response.message);
           Alert.alert(title = 'Realizando análise!');
-      }).catch(error => {
-        Alert.alert(title = 'Error: ')
-      });
+     }).catch((error => error.json())
+      .catch(error => {
+        Alert.alert(title = 'Error: '+error)
+      }));
+  }
+
+  
+  iniciaConsulta(){
+    this.state.i = setInterval(this.analisysComplete(), 15000);
+  }
+
+  paraConsulta(){
+    clearInterval(this.state.i);
   }
 
   analisysComplete() {
-    var res = '';
-    var i = setInterval(function () {     
+    var res = '';     
     console.log("Log do analisysComplete")
-      fetch('http://192.168.43.163:5000/api/gyresources/analysis/?action=searchByID&id=256599', {
+      fetch('http://10.0.2.2:5000/api/gyresources/analysis/?action=searchByID&id=19', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'dataType': 'json'
       }
-    }).then(response => response.json())
+    }).then((response) => response.text())
       .then(response => {
-        res = response
-        clearInterval(i);
-        Alert.alert("Analise finalizada!", "Organizando informações")
-        var counter = {}
+        res = response;
+        var counter = {};
+        response = JSON.parse(response);
         if (response.response.analysis_results.length > 0) {
-          console.log("Analisys results its filled, sorting..."+ JSON.parse(res));
-          for (var i = 0; i < response.response.analysis_results.length; i++) {
-            if (!response.response.analysis_results[i].disease.id in counter.keys()) {
+          this.paraConsulta();
+          counter[response.response.analysis_results[0].disease.id] = 0;
+          for(var i = 0; i < response.response.analysis_results.length; i++) {
+
+            if (!JSON.stringify(response.response.analysis_results[i].disease.id) in Object.keys(counter)) {
               counter[response.response.analysis_results[i].disease.id] = 1
-            } else {
+              console.log('Inseri 1: '+JSON.stringify(response.response.analysis_results[i].disease.id));
+            } 
+            
+            else {
               counter[response.response.analysis_results[i].disease.id] += 1
+              console.log('Inseri +=1: '+JSON.stringify(response.response.analysis_results[i].disease.id));
             }
           }
 
           var greater = [response.response.analysis_results[0].disease.id, response.response.analysis_results[0].disease.id, response.response.analysis_results[0].disease.id];
+          console.log('COUNTER: '+JSON.stringify(counter));
           for (var i = 0; i < greater.length; i++) {
             var index = 0
             var aux = 0
@@ -244,8 +253,9 @@ export default class Analisys extends Component {
             greater[i] = index
             delete counter[index]
           }
+          console.log('APARECE MAIS: '+JSON.stringify(greater));
 
-          var diseases = []
+          var diseases = [];
           for (var j = 0; j < greater.length; j++) {
             for (var i = 0; i < response.response.analysis_results.length; i++) {
               if (response.response.analysis_results[i].disease.id == greater[j]) {
@@ -254,101 +264,118 @@ export default class Analisys extends Component {
               }
             }
           }
-
-          for (var i = 0; i< diseases.length; i++) {
-            hell = {}
-            hell.push("analisys"+i, diseases[i].scientificName)
-            hell.push("idDisease"+i, diseases[i].idDisease)
-            hell.push("percent"+i, counter[diseases[i].idDisease] / response.response.analysis_results.length + "%")
-            this.setState(hell)
+          console.log('DOENÇA: '+JSON.stringify(diseases));
+          if(diseases[0] == null){
+            this.setState({analisys1: "Saudável", analisys2: "", analisys3: ""});
+          }else{
+            this.setState({analisys1: diseases[0].scientificName});
+            store.push('diseaseInfo', diseases[0].id);
+            this.setState(this.state.cards[parseInt(this.state.id)-1] = {
+              id: (parseInt(this.state.id)-1).toString(),
+              title: 'Analise id: ' + (parseInt(this.state.id)-1).toString(),
+              picture: this.state.cardPhoto,
+              content: <View>
+                <Text h4>Doenças detectadas: </Text>
+                <View style={styles.analisys}>
+                  <Icon backgroundColor='transparent' name='bug-report'></Icon>
+                  <Text> {this.state.analisys1}</Text>
+                  <Right>
+                    <View flexDirection='row'>
+                      {this.progress}
+                      <TouchableOpacity
+                        onPress={() => {this.props.navigation.navigate('Results')}}>
+                        <Text style={{ color: 'blue' }}>{this.state.percent1}</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </Right>
+                </View>
+                <Text h4>Você sabia?</Text>
+                <Text>A sua análise além de lhe ajudar a identificar a doença que
+                está afetando o seu cultivo, está contribuindo junto com o crescimento
+                          de nosso banco de imagens?! </Text>
+                <Text>Portanto, desfrute o máximo que o
+                          Aplicativo GreenEyes pode te oferecer!</Text>
+              </View>
+            });
+            if(diseases[1] == null){
+              this.setState({analisys2: "Saudável", analisys3: ""});
+            }else{
+              this.setState({analisys2: diseases[1].scientificName});
+              store.push('diseaseInfo', diseases[1].id);
+              this.setState(this.state.cards[parseInt(this.state.id)-1] = {
+                id: (parseInt(this.state.id)-1).toString(),
+                title: 'Analise id: ' + parseInt(this.state.id)-1,
+                picture: this.state.cardPhoto,
+                content: <View>
+                  <Text h4>Doenças detectadas: </Text>
+                  <View style={styles.analisys}>
+                    <Icon backgroundColor='transparent' name='bug-report'></Icon>
+                    <Text> {this.state.analisys2}</Text>
+                    <Right>
+                      <View flexDirection='row'>
+                        {this.progress}
+                        <TouchableOpacity
+                          onPress={() => {this.getDisease(this.state.idDisease1)}}>
+                          <Text style={{ color: 'blue' }}>{this.state.percent1}</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </Right>
+                  </View>
+                  <Text h4>Você sabia?</Text>
+                  <Text>A sua análise além de lhe ajudar a identificar a doença que
+                  está afetando o seu cultivo, está contribuindo junto com o crescimento
+                            de nosso banco de imagens?! </Text>
+                  <Text>Portanto, desfrute o máximo que o
+                            Aplicativo GreenEyes pode te oferecer!</Text>
+                </View>
+              });
+              if(diseases[2] == null){
+                this.setState({analisys3: "Saudável"});
+              }else{
+                this.setState({analisys3: diseases[2].scientificName})
+                store.push('diseaseInfo', diseases[2].id);
+                this.setState(this.state.cards[parseInt(this.state.id)-1] = {
+                  id: (parseInt(this.state.id)-1).toString(),
+                  title: 'Analise id: ' + parseInt(this.state.id)-1,
+                  picture: this.state.cardPhoto,
+                  content: <View>
+                    <Text h4>Doenças detectadas: </Text>
+                    <View style={styles.analisys}>
+                      <Icon backgroundColor='transparent' name='bug-report'></Icon>
+                      <Text> {this.state.analisys2}</Text>
+                      <Right>
+                        <View flexDirection='row'>
+                          {this.progress}
+                          <TouchableOpacity
+                            onPress={() => {this.getDisease(this.state.idDisease1)}}>
+                            <Text style={{ color: 'blue' }}>{this.state.percent1}</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </Right>
+                    </View>
+                    <Text h4>Você sabia?</Text>
+                    <Text>A sua análise além de lhe ajudar a identificar a doença que
+                    está afetando o seu cultivo, está contribuindo junto com o crescimento
+                              de nosso banco de imagens?! </Text>
+                    <Text>Portanto, desfrute o máximo que o
+                              Aplicativo GreenEyes pode te oferecer!</Text>
+                  </View>
+                });
+              }
+            }
           }
+         console.log("Sorteado.")
         }
+        else{
+          Alert.alert("Ainda não")
+        }
+      }).catch((error) => {
+        console.log("Erro: "+error)
       });
-    }.bind(this), 19000);
-    Alert.alert("Analise ainda não está completa")
-    //clearInterval(this.state.i);
-    console.log(res);
-    this.sortedDiseases(res);
-    console.log("Analisys results is empty XXXXX");
-  }
-
-  sortedDiseases(result) {
-    console.log("Waiting, sorting diseases.")
-    var count_disease = { id: 0, count: 0 };
-    var list = [{ id: 0, idDisease: 0, scientificName: "<i>Alternaria solani</i>", count: 0 }, { id: 1, idDisease: 0, scientificName: "<i>Septoria lycopersici</i>", count: 0 }, { id: 2, idDisease: 0, scientificName: "<i>Tetranychus urticae</i>", count: 0 }, { id: 3, idDisease: 0, scientificName: "<i>Xanthomonas campestris</i>", count: 0 }, { id: 4, idDisease: -1, scientificName: "<i>Outros</i>", count: 0 }];
-    /* 
-     * 0 Alternaria solani
-     * 1 Septoria lycopersici
-     * 2 Tetranychus urticae
-     * 3 Xanthomonas campestris
-     * 4 Outros
-     */
-    var total = 0;
-    var j = result.response.analysis_results.length;
-    for (var i = 0; i < j; i++) {
-      process.stdout.write("\n" + i + ": " + result.response.analysis_results[i].disease.scientificName);
-      if (result.response.analysis_results[i].disease.scientificName == "<i>Alternaria solani</i>") {
-        list[0].count += 1;
-        if (list[0].count == 1) {
-          list[0].idDisease = result.response.analysis_results[i].disease.id;
-        }
-      } else if (result.response.analysis_results[i].disease.scientificName == "<i>Septoria lycopersici</i>") {
-        list[1].count += 1;
-        if (list[1].count == 1) {
-          list[1].idDisease = result.response.analysis_results[i].disease.id;
-        }
-      } else if (result.response.analysis_results[i].disease.scientificName == "<i>Tetranychus urticae</i>") {
-        list[2].count += 1;
-        if (list[2].count == 1) {
-          list[2].idDisease = result.response.analysis_results[i].disease.id;
-        }
-      } else if (result.response.analysis_results[i].disease.scientificName == "<i>Xanthomonas campestris</i>") {
-        list[3].count += 1;
-        if (list[3].count == 1) {
-          list[3].idDisease = result.response.analysis_results[i].disease.id;
-        }
-      } else {
-        list[4].count += 1;
-      }
-      total += 1;
-    }
-
-
-    var maior1 = { id: list[0].id, scientificName: list[0].scientificName, idDisease: list[0].idDisease, count: list[0].count };
-    var maior2 = { id: 0, scientificName: "", idDisease: 0, count: 0 };
-    var maior3 = { id: 0, scientificName: "", idDisease: 0, count: 0 };
-
-    var k = list.length - 1;
-
-    for (var i = 1; i < k; i++) {
-      if (list[i].count > maior1.count) {
-        maior3 = maior2;
-        maior2 = maior1;
-        maior1 = list[i];
-      } else if (list[i].count > maior2.count) {
-        maior3 = maior2;
-        maior2 = list[i];
-      } else if (list[i].count > maior3.count) {
-        maior3 = list[i];
-      }
-    }
-    Alert.alert("Finalizado!");
-    console.log("Sorted")
-    this.setState({
-      analisys1: maior1.scientificName,
-      analisys2: maior2.scientificName,
-      analisys3: maior3.scientificName,
-      idDisease1: maior1.idDisease,
-      idDisease2: maior2.idDisease,
-      idDisease3: maior3.idDisease,
-      percent1: maior1.count / total + "%",
-      percent2: maior2.count / total + "%",
-      percent3: maior3.count / total + "%"
-    });
   }
 
   getDisease(aux){
-    fetch('http://192.168.43.163:5000/api/gyresources/diseases/?action=searchByID&id='+aux+'&pageSize=10&offset=10', {
+    fetch('http://192.168.0.131:5000/api/gyresources/diseases/?action=searchByID&id='+aux+'&pageSize=10&offset=10', {
 			headers: {
 				'Accept': 'application/json',
 			}

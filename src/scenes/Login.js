@@ -40,7 +40,8 @@ export default class Login extends Component {
             rounded
             onPress={() => {
               //this.auth();
-              this.props.navigation.navigate('Main')}}>
+              this.props.navigation.navigate('Main')
+              }}>
           </Button>
           <View padding={5}></View>
           <Button
@@ -69,7 +70,7 @@ export default class Login extends Component {
     else {
       window.btoa = window.btoa || require('Base64').btoa;
       creds = btoa(this.state.username + ":" + this.state.password);
-      fetch('http://192.168.43.163:5000/api/gyresources/token/', {
+      fetch('http://192.168.0.131:5000/api/gyresources/token/', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -84,6 +85,8 @@ export default class Login extends Component {
             });
             store.push("userinfo", JSON.parse(response.response));
             console.log("Logged successfully !"+ response.response.token);
+          } else{
+            Alert.alert("Usuário ou senha inválido");
           }
         })
         .catch((error) => {

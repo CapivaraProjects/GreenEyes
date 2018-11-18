@@ -4,7 +4,7 @@ import {StackNavigator} from 'react-navigation'
 import {Icon} from 'react-native-elements'
 import Plants from './Plants'
 import SearchBody from './SearchBody'
-
+import DiseaseController from './DiseaseController'
 export default class PlantsController extends Component {
   static navigationOptions = {
     header: null,
@@ -16,6 +16,7 @@ export default class PlantsController extends Component {
   render() {
     return (
       <AppStackNavigator/>
+      
     );
   }
 }
@@ -23,6 +24,7 @@ export default class PlantsController extends Component {
 const AppStackNavigator = StackNavigator({
   Plants:Plants,
   Search:SearchBody,
+  Disease:DiseaseController
 });
 
 const styles = StyleSheet.create({

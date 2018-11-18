@@ -62,7 +62,7 @@ export default class SignUp extends Component {
   createUser(){
     if(this.state.username != null & this.state.email != null){
        if(this.state.password == this.state.repassword){
-        fetch('http://192.168.43.163:5000/api/gyresources/users/', {
+        fetch('http://192.168.0.131:5000/api/gyresources/users/', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -81,7 +81,6 @@ export default class SignUp extends Component {
         var response = responseJson.json();
         if(response.status_code == 200){
           Keyboard.dismiss();
-          this.props.navigation.navigate('Login');
           var userInfo = {
             email: this.state.email,
             username: this.state.username,
@@ -93,17 +92,20 @@ export default class SignUp extends Component {
           }
         }
         Alert.alert("Sucesso!", "Cadastrado com sucesso!");
+        this.props.navigation.navigate('Login');
       }).catch((error) => {
             console.error(error);
             Alert.alert(
-              title='Legal!',
-              error)
+              title='Opa',
+              "Algo de errado aconteceu, tente novamente em instantes.")
       });
     } else{
       Alert.alert(
         title='Opa!',
         'Senhas divergentes!') 
       }
+    } else{
+      Alert.alert(title="Ops!", 'Usuário ou e-mail não preenchidos!')
     }
   }
 }

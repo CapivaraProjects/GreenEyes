@@ -2,33 +2,30 @@ import React, { Component } from 'react';
 import { StyleSheet} from 'react-native';
 import {StackNavigator} from 'react-navigation'
 import {Icon} from 'react-native-elements'
-import Results from './Results';
-import Analisys from './Analisys';
-import Disease from './Disease';
-
-export default class AnalisysController extends Component {
-  state = {
-    token: ''
-  }
+import Plants from './Plants'
+import SearchBody from './SearchBody'
+import Disease from './Disease'
+var diseaseInfo = 0;
+export default class PlantsController extends Component {
   static navigationOptions = {
     header: null,
     tabBarIcon: ({tintColor}) => (
-    <Icon name='spa' style={{color: tintColor}} />
+    <Icon name='search' style={{color: tintColor}} />
     )
   };
 
   render() {
-    const properties = {token: this.props.screenProps.token, diseaseInfo: 53};
+    console.log(this.props.navigation.state.params.diseaseInfo);
     return (
-      <AppStackNavigator screenProps={properties}/>
+      <AppStackNavigator screenProps={{diseaseInfo: this.props.navigation.state.params.diseaseInfo}}/>
+      
     );
   }
 }
 
 const AppStackNavigator = StackNavigator({
-  Analise:Analisys,
-  Resultado:Results,
-  Disease:Disease
+  Disease:Disease,
+  Search:SearchBody
 });
 
 const styles = StyleSheet.create({

@@ -50,7 +50,7 @@ export default class PwRecovery extends Component {
       console.log("Email confirmed");
     var i = parseInt(Math.random() * ((9999 - 1000) + 1));
     this.setState({ generatedCode: i });
-    console.log("Code generated, sending emai.");
+    console.log("Code generated, sending email.");
     fetch('http://192.168.43.163:5000/api/gyresources/messages/', {
       method: 'POST',
       headers: {
@@ -64,14 +64,13 @@ export default class PwRecovery extends Component {
     }).then(response => response.json())
       .then(response => {
         Alert.alert(title = 'Sucesso!', 'Enviamos uma nova senha a você!');
-        console.log("E-mail sended.");
-        console.log(response);
+        console.log("E-mail sended."+response);
       }).catch((error) => {
         console.error(error);
       });
     }
     else{
-      Alert.alert("Nenhum usuário com esse e-mail, logou no aplicativo")
+      Alert.alert("E-mail não cadastrado.")
     }
   }
 }

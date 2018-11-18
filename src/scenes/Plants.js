@@ -15,7 +15,7 @@ export default class Plants extends Component {
 		searchPlant: '',
 		plant: [],
 		plantFound: false,
-		data: [],
+		data: []
 	}
 
 	plantSearch = () => {

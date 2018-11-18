@@ -35,7 +35,7 @@ export default class About extends Component {
             -E aqueles que contribuiram de alguma forma para o sucesso do nosso projeto!
         </Text>
         </View>
-        <Container style={{ paddingLeft: 35, paddingRight: 30, paddingTop: 2 }}>
+        <Container style={{ paddingLeft: 32, paddingRight: 30, paddingTop: 2 }}>
           <Text h4 style={styles.description2}>A Equipe</Text>
           <Content>
             <View>

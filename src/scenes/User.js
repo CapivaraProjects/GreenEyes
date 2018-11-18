@@ -241,7 +241,7 @@ export default class User extends Component {
 			}),
 		}).then(response => response.json())
 			.then(response => {
-				Alert.alert(title = 'Informações atualizadas!', 'Resposta: ' + response.message)
+				Alert.alert(title = 'Senha atualizada!');
 				console.log(response);
 			}).catch(error => {
 				console.log(error);

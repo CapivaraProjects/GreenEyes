@@ -5,12 +5,7 @@ import Howto from './scenes/Howto';
 import User from './scenes/User';
 import About from './scenes/About';
 import AnalisysController from './scenes/AnalisysController';
-import { 
-  StyleSheet,
-} from 'react-native';
-import Analisys from './scenes/Analisys';
 import TermsOfUse from './scenes/TermsOfUse';
-
 export default class Main extends Component {
   constructor(props){
     super(props);
@@ -64,6 +59,7 @@ const AppTabNavigator = TabNavigator({
   animationEnabled: true,
   swipeEnabled: false,
   tabBarPosition: "bottom",
+  initialRouteName: 'AnalisysController',
   backgroundColor: "#8BC34A",
   tabBarOptions: {
     activeTintColor: "#212121",
