@@ -156,7 +156,7 @@ class SearchBody extends Component {
   }
 
   getText() {
-    fetch('http://10.0.2.2:5000/api/gyresources/texts/' + '', {
+    fetch('http://192.168.43.163:5000/api/gyresources/texts/' + '', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',

@@ -94,7 +94,7 @@ export default class Analisys extends Component {
             <Text> {this.state.analisys1}</Text>
             <Right>
               <View flexDirection='row'>
-                {this.progress}
+                <ProgressBarAndroid styleAttr="Small"/>
                 <TouchableOpacity
                   onPress={() => {this.getDisease(this.state.idDisease1)}}>
                   <Text style={{ color: 'blue' }}>{this.state.percent1}</Text>
@@ -137,14 +137,14 @@ export default class Analisys extends Component {
         </View>
       });
       this.setState({ id: parseInt(this.state.id) + 1 });
-      //this.sendImage();
-      this.iniciaConsulta();
+      this.sendImage();
+
     });
   }
 
   sendImage() {
     console.log("log do sendImage:" + this.props.screenProps.token.token)
-    fetch('http://192.168.0.131:5000/api/gyresources/images/', {
+    fetch('http://192.168.43.163:5000/api/gyresources/images/', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -174,8 +174,8 @@ export default class Analisys extends Component {
   }
 
   addAnalysis() {
-    console.log("Cheguei no addAnalisys")
-    fetch('http://192.168.0.131:5000/api/gyresources/analysis/', {
+    console.log("Cheguei no addAnalisys");
+    fetch('http://192.168.43.163:5000/api/gyresources/analysis/', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -189,55 +189,65 @@ export default class Analisys extends Component {
         idUser: 1
       }),
     }).then((response) => response.json())
-      .then(response => {      
+      .then(response => {
           console.log(response);
-          this.analisysComplete();
-          console.log('Token: ' + this.props.screenProps.token.token + ', Id: ' + this.state.idImagem + ', Message from API: ' + response.message);
+          this.setState();
+          this.roda();
+          console.log('Token: ' + this.props.screenProps.token.token + ', Id: ' + this.state.idImagem + ', Message from API: ' + response.message);          
           Alert.alert(title = 'Realizando análise!');
-     }).catch((error => error.json())
-      .catch(error => {
-        Alert.alert(title = 'Error: '+error)
-      }));
+        
+     }).catch( (error) =>{ 
+       
+        Alert.alert(title = 'Error: '+error);
+     });
   }
 
-  
-  iniciaConsulta(){
-    this.state.i = setInterval(this.analisysComplete(), 15000);
-  }
-
-  paraConsulta(){
-    clearInterval(this.state.i);
-  }
-
-  analisysComplete() {
+  roda(){
+    var runningcounter = 0;
     var res = '';     
-    console.log("Log do analisysComplete")
-      fetch('http://10.0.2.2:5000/api/gyresources/analysis/?action=searchByID&id=19', {
+    var _this = this;
+    var interval = setInterval(function()  {
+      runningcounter += 1;
+      if(runningcounter == 4 ){
+        clearInterval(interval); 
+      }
+      _this.analisysComplete();
+    }, 15000);
+  }
+
+  analisysComplete = function() {
+    Alert.alert("Iniciando consulta!");
+    var res ='';
+      console.log("Log do analisysComplete");
+      fetch('http://192.168.43.163:5000/api/gyresources/analysis/?action=searchByID&id=2775', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'dataType': 'json'
       }
-    }).then((response) => response.text())
+      }).then((response) => response.text())
       .then(response => {
         res = response;
         var counter = {};
         response = JSON.parse(response);
         if (response.response.analysis_results.length > 0) {
-          this.paraConsulta();
+          Alert.alert("Quase terminando!")
+          
           counter[response.response.analysis_results[0].disease.id] = 0;
+          console.log("COUNTER_V2: "+Object.keys(counter)+" , TIPO"+typeof counter);
           for(var i = 0; i < response.response.analysis_results.length; i++) {
 
-            if (!JSON.stringify(response.response.analysis_results[i].disease.id) in Object.keys(counter)) {
-              counter[response.response.analysis_results[i].disease.id] = 1
+            //if (!(JSON.stringify(response.response.analysis_results[i].disease.id) in Object.keys(counter))) {
+            if (!(counter.hasOwnProperty(JSON.stringify(response.response.analysis_results[i].disease.id)))) {
+                counter[response.response.analysis_results[i].disease.id] = 1
               console.log('Inseri 1: '+JSON.stringify(response.response.analysis_results[i].disease.id));
-            } 
-            
+            }
             else {
               counter[response.response.analysis_results[i].disease.id] += 1
               console.log('Inseri +=1: '+JSON.stringify(response.response.analysis_results[i].disease.id));
             }
+            console.log("COUNTER_V3: "+Object.keys(counter));
           }
 
           var greater = [response.response.analysis_results[0].disease.id, response.response.analysis_results[0].disease.id, response.response.analysis_results[0].disease.id];
@@ -283,7 +293,7 @@ export default class Analisys extends Component {
                     <View flexDirection='row'>
                       {this.progress}
                       <TouchableOpacity
-                        onPress={() => {this.props.navigation.navigate('Results')}}>
+                        onPress={() => {this.props.navigation.navigate('Disease', {diseaseInfo: diseases[0].id})}}>
                         <Text style={{ color: 'blue' }}>{this.state.percent1}</Text>
                       </TouchableOpacity>
                     </View>
@@ -315,7 +325,7 @@ export default class Analisys extends Component {
                       <View flexDirection='row'>
                         {this.progress}
                         <TouchableOpacity
-                          onPress={() => {this.getDisease(this.state.idDisease1)}}>
+                          onPress={() => {this.props.navigation.navigate('Disease', {diseaseInfo: diseases[1].id})}}>
                           <Text style={{ color: 'blue' }}>{this.state.percent1}</Text>
                         </TouchableOpacity>
                       </View>
@@ -347,7 +357,7 @@ export default class Analisys extends Component {
                         <View flexDirection='row'>
                           {this.progress}
                           <TouchableOpacity
-                            onPress={() => {this.getDisease(this.state.idDisease1)}}>
+                            onPress={() => {this.props.navigation.navigate('Disease', {diseaseInfo: diseases[2].id})}}>
                             <Text style={{ color: 'blue' }}>{this.state.percent1}</Text>
                           </TouchableOpacity>
                         </View>
@@ -367,43 +377,12 @@ export default class Analisys extends Component {
          console.log("Sorteado.")
         }
         else{
-          Alert.alert("Ainda não")
+          Alert.alert("Análise quase conclúida!");
         }
       }).catch((error) => {
         console.log("Erro: "+error)
       });
-  }
-
-  getDisease(aux){
-    fetch('http://192.168.0.131:5000/api/gyresources/diseases/?action=searchByID&id='+aux+'&pageSize=10&offset=10', {
-			headers: {
-				'Accept': 'application/json',
-			}
-		}).then((response) => response.json())
-    .then(response => {
-      if (response.status_code == 200 || response.status_code == 201) {
-        this.props.navigation.navigate('Results', {
-          results: response.response
-        });
-      }
-    }).catch((error) => {
-      console.error(error);
-    });
-  }
-
-  animate() {
-    let progress = 0;
-    this.setState({ progress });
-    setTimeout(() => {
-      this.setState({ indeterminate: false });
-      setInterval(() => {
-        progress += Math.random() / 5;
-        if (progress > 1) {
-          progress = 1;
-        }
-        this.setState({ progress });
-      }, 500);
-    }, 1500);
+    
   }
 
   render() {

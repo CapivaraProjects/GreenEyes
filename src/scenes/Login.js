@@ -14,6 +14,25 @@ export default class Login extends Component {
     title: 'Login',
   };
 
+  onSubmit() {
+    let errors = {};
+
+    ['username', 'password']
+      .forEach((name) => {
+        let value = this[name].value();
+
+        if (!value) {
+          errors[name] = 'Não pode ser vazio';
+        } else {
+          if ('password' === name && value.length < 6) {
+            errors[name] = 'Muito curto';
+          }
+        }
+      });
+
+    //this.auth();
+  }
+
   render() {
     const { navigate } = () => this.props.navigation;
     return (
@@ -27,10 +46,12 @@ export default class Login extends Component {
           <TextField
             label='Usuário'
             returnKeyType='next'
+            blurOnSubmit={true}
             onChangeText={(value) => this.setState({ username: value })} />
           <TextField
             label='Senha'
             secureTextEntry={true}
+            blurOnSubmit={true}
             onChangeText={(value) => this.setState({ password: value })} />
           <View></View>
           <Button
@@ -39,8 +60,9 @@ export default class Login extends Component {
             title='Login'
             rounded
             onPress={() => {
-              //this.auth();
-              this.props.navigation.navigate('Main')
+              //this.onSubmit();
+              //this.props.navigation.navigate('Main')
+              this.auth();
               }}>
           </Button>
           <View padding={5}></View>
@@ -70,7 +92,7 @@ export default class Login extends Component {
     else {
       window.btoa = window.btoa || require('Base64').btoa;
       creds = btoa(this.state.username + ":" + this.state.password);
-      fetch('http://192.168.0.131:5000/api/gyresources/token/', {
+      fetch('http://192.168.43.163:5000/api/gyresources/token/', {
         method: 'POST',
         headers: {
           Accept: 'application/json',

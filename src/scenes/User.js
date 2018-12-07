@@ -78,13 +78,13 @@ export default class User extends Component {
 						<ListItem>
 							<InputGroup>
 								<Icon name="person" style={styles.iconStyle} />
-								<Text> User</Text>
+								<Text> {'gvnn'.toUpperCase()}</Text>
 							</InputGroup>
 						</ListItem>
 						<ListItem>
 							<InputGroup>
 								<Icon name="email" style={styles.iconStyle} />
-								<Text> test@email.com</Text>
+								<Text> {'giovanni_cs09@hotmail.com'.toUpperCase()}</Text>
 							</InputGroup>
 						</ListItem>
 						<ListItem>

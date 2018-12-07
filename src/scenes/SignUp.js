@@ -62,7 +62,7 @@ export default class SignUp extends Component {
   createUser(){
     if(this.state.username != null & this.state.email != null){
        if(this.state.password == this.state.repassword){
-        fetch('http://192.168.0.131:5000/api/gyresources/users/', {
+        fetch('http://192.168.43.163:5000/api/gyresources/users/', {
         method: 'POST',
         headers: {
           Accept: 'application/json',

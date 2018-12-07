@@ -16,7 +16,6 @@ export default class PlantsController extends Component {
   render() {
     return (
       <AppStackNavigator/>
-      
     );
   }
 }

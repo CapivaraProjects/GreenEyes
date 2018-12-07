@@ -5,6 +5,7 @@ import {Icon} from 'react-native-elements'
 import Plants from './Plants'
 import SearchBody from './SearchBody'
 import Disease from './Disease'
+import Analisys from './Analisys'
 var diseaseInfo = 0;
 export default class PlantsController extends Component {
   static navigationOptions = {
@@ -18,14 +19,14 @@ export default class PlantsController extends Component {
     console.log(this.props.navigation.state.params.diseaseInfo);
     return (
       <AppStackNavigator screenProps={{diseaseInfo: this.props.navigation.state.params.diseaseInfo}}/>
-      
     );
   }
 }
 
 const AppStackNavigator = StackNavigator({
   Disease:Disease,
-  Search:SearchBody
+  Search:SearchBody,
+  Analisys:Analisys
 });
 
 const styles = StyleSheet.create({
