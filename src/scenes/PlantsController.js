@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet} from 'react-native';
-import {StackNavigator} from 'react-navigation'
+import {createStackNavigator, createAppContainer} from 'react-navigation'
 import {Icon} from 'react-native-elements'
 import Plants from './Plants'
 import SearchBody from './SearchBody'
@@ -20,11 +20,15 @@ export default class PlantsController extends Component {
   }
 }
 
-const AppStackNavigator = StackNavigator({
+const AppStackNavigator =createAppContainer(createStackNavigator({
   Plants:Plants,
   Search:SearchBody,
   Disease:DiseaseController
-});
+}, {
+  defautNavigationOptions: {
+    gesturesEnabled: false
+  },
+}));
 
 const styles = StyleSheet.create({
   container: {

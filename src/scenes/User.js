@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 import { Icon, Avatar, Text } from 'react-native-elements';
 import img from '../thumbnails/user_icon.png'
+import { config } from '../../config'
 
 const Item = Picker.Item;
 export default class User extends Component {
@@ -223,7 +224,7 @@ export default class User extends Component {
 	}
 
 	updateUser() {
-		fetch('http://192.168.43.163:5000/api/gyresources/users/', {
+		fetch(config.API_URL+'/users/', {
 			method: 'PUT',
 			headers: {
 				'Accept': 'application/json',
@@ -252,7 +253,7 @@ export default class User extends Component {
 	}
 
 	sendEmail() {
-		fetch('http://192.168.43.163:5000/api/gyresources/messageservice/', {
+		fetch(config.API_URL+'/messageservice/', {
 			method: 'POST',
 			headers: {
 				Accept: 'application/json',

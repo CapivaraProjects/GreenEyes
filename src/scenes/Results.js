@@ -13,7 +13,8 @@ import {
 import img from '../doenca1.jpeg'
 import ViewMoreText from 'react-native-view-more-text';
 import store from 'react-native-simple-store';
- 
+import { config } from '../../config'
+
 export default class Results extends Component
 {
 	constructor() {

@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { StyleSheet} from 'react-native';
-import {StackNavigator} from 'react-navigation'
+import {createStackNavigator, createAppContainer} from 'react-navigation'
 import {Icon} from 'react-native-elements'
-import Plants from './Plants'
 import SearchBody from './SearchBody'
 import Disease from './Disease'
 import Analisys from './Analisys'
+import { config } from '../../config'
+
 var diseaseInfo = 0;
 export default class PlantsController extends Component {
   static navigationOptions = {
@@ -23,12 +24,24 @@ export default class PlantsController extends Component {
   }
 }
 
-const AppStackNavigator = StackNavigator({
-  Disease:Disease,
-  Search:SearchBody,
-  Analisys:Analisys
-});
-
+const AppStackNavigator = createAppContainer(createStackNavigator({
+     Disease: { screen: Disease, navigationOptions: { header: null} },
+     Search: { screen: SearchBody, navigationOptions: { header: null} },
+     Analysis: { screen: Analisys, navigationOptions: { header: null} }
+  },{ initialRouteName: 'Analysis' }));
+  /*, {
+    headerMode:'none',
+    mode: 'modal',
+    defautNavigationOptions: {
+      gesturesEnabled: false
+    },
+    /** transitionConfig: () => ({
+      transitionSpec: {
+        duration: 300,
+        easing: Easing.out
+      }
+    })
+  }*/
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -7,6 +7,7 @@ import {
   ScrollView
 } from 'react-native';
 import { Thumbnail, Container, Content } from 'native-base';
+import { config } from '../../config'
 
 export default class About extends Component {
   static navigationOptions = {

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { StyleSheet} from 'react-native';
-import {StackNavigator} from 'react-navigation'
+import {createStackNavigator, createAppContainer} from 'react-navigation'
 import {Icon} from 'react-native-elements'
 import Results from './Results';
 import Analisys from './Analisys';
 import Disease from './Disease';
+import { config } from '../../config'
+
 
 export default class AnalisysController extends Component {
   state = {
@@ -25,11 +27,15 @@ export default class AnalisysController extends Component {
   }
 }
 
-const AppStackNavigator = StackNavigator({
+const AppStackNavigator = createAppContainer(createStackNavigator({
   Analise:Analisys,
   Resultado:Results,
   Disease:Disease
-});
+}, {
+  defautNavigationOptions: {
+    gesturesEnabled: false
+  },
+}));
 
 const styles = StyleSheet.create({
   container: {

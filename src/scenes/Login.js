@@ -3,35 +3,17 @@ import { Image, View, StyleSheet, Alert } from 'react-native';
 import { Button, FormLabel, FormInput, FormValidationMessage, Text } from 'react-native-elements'
 import { TextField } from 'react-native-material-textfield'
 import store from 'react-native-simple-store';
+import { config } from '../../config'
 
 export default class Login extends Component {
   state = {
-    username: 'test',
-    password: 'test',
+    username: '',
+    password: '',
   };
 
   navigationOptions = {
     title: 'Login',
   };
-
-  onSubmit() {
-    let errors = {};
-
-    ['username', 'password']
-      .forEach((name) => {
-        let value = this[name].value();
-
-        if (!value) {
-          errors[name] = 'Não pode ser vazio';
-        } else {
-          if ('password' === name && value.length < 6) {
-            errors[name] = 'Muito curto';
-          }
-        }
-      });
-
-    //this.auth();
-  }
 
   render() {
     const { navigate } = () => this.props.navigation;
@@ -60,8 +42,6 @@ export default class Login extends Component {
             title='Login'
             rounded
             onPress={() => {
-              //this.onSubmit();
-              //this.props.navigation.navigate('Main')
               this.auth();
               }}>
           </Button>
@@ -81,7 +61,10 @@ export default class Login extends Component {
       </View>
     );
   }
-
+  teste(){
+    Alert.alert(
+      title = 'Ops!', config.API_URL)
+  }
   auth() {
     if (this.state.username == null || this.state.password == null) {
       Alert.alert(
@@ -92,7 +75,7 @@ export default class Login extends Component {
     else {
       window.btoa = window.btoa || require('Base64').btoa;
       creds = btoa(this.state.username + ":" + this.state.password);
-      fetch('http://192.168.43.163:5000/api/gyresources/token/', {
+      fetch( config.API_URL+'/token/', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -105,13 +88,14 @@ export default class Login extends Component {
             this.props.navigation.navigate('Main', {
               token: response.response.token
             });
-            store.push("userinfo", JSON.parse(response.response));
+            //store.push("userinfo", JSON.parse(response.response));
             console.log("Logged successfully !"+ response.response.token);
           } else{
             Alert.alert("Usuário ou senha inválido");
           }
         })
         .catch((error) => {
+          
           console.error(error);
         });
     }

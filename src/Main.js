@@ -1,4 +1,4 @@
-import {TabNavigator} from 'react-navigation'
+import {createBottomTabNavigator, createAppContainer} from 'react-navigation'
 import React, { Component } from 'react';
 import PlantsController from './scenes/PlantsController';
 import Howto from './scenes/Howto';
@@ -22,7 +22,7 @@ export default class Main extends Component {
 }
 
 
-const AppTabNavigator = TabNavigator({
+const AppTabNavigator = createAppContainer(createBottomTabNavigator({
   Howto:{
     screen: Howto,
     navigationOptions: {
@@ -82,6 +82,6 @@ const AppTabNavigator = TabNavigator({
   },
   
 },
-);
+));
 
 

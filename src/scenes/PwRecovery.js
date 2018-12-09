@@ -7,6 +7,7 @@ import {
 import { FormInput, FormLabel, Button, Text } from 'react-native-elements'
 import { TextField } from 'react-native-material-textfield'
 import store from 'react-native-simple-store';
+import { config } from '../../config'
 
 export default class PwRecovery extends Component {
   static navigationOptions =
@@ -45,7 +46,7 @@ export default class PwRecovery extends Component {
   }
 
   sendEmail() {
-    fetch('http://192.168.43.163:5000/api/gyresources/users/?action=search&id=0&email=' + this.state.email + '&username=%20&password=%20&salt=%20&dateInsertion=%20&dateUpdate=%20&pageSize=1&offset=1', {
+    fetch(config.API_URL+'/users/?action=search&id=0&email=' + this.state.email + '&username=%20&password=%20&salt=%20&dateInsertion=%20&dateUpdate=%20&pageSize=1&offset=1', {
       headers: {
         'Accept': 'application/json',
       }
@@ -56,7 +57,7 @@ export default class PwRecovery extends Component {
           var i = parseInt(Math.random() * ((9999 - 1000) + 1));
           this.setState({ generatedCode: i });
           console.log("Code generated, reseting password.");
-          fetch('http://192.168.43.163:5000/api/gyresources/users/', {
+          fetch(config.API_URL+'/users/', {
             method: 'PUT',
             headers: {
               Accept: 'application/json',
@@ -76,7 +77,7 @@ export default class PwRecovery extends Component {
             .then(response => {
               if(response.status_code == 200) {
               console.log("Password reseted, sending e-mail");
-              fetch('http://192.168.43.163:5000/api/gyresources/messages/', {
+              fetch(config.API_URL+'/messages/', {
                 method: 'POST',
                 headers: {
                   Accept: 'application/json',

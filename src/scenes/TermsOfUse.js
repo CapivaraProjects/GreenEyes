@@ -7,6 +7,7 @@ import {
   ScrollView,
   Modal
 } from 'react-native';
+import { config } from '../../config'
 
 export default class TermsOfUse extends Component {
 

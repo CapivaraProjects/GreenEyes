@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import {StackNavigator} from 'react-navigation';
 import { AppRegistry, 
   Image,
   View, 
   StyleSheet, 
   Alert} from 'react-native';
 import {FormInput, FormLabel, Button, Text} from 'react-native-elements'
+import { config } from '../../config'
 
 export default class SignUp extends Component {
   static navigationOptions =
@@ -62,7 +62,7 @@ export default class SignUp extends Component {
   createUser(){
     if(this.state.username != null & this.state.email != null){
        if(this.state.password == this.state.repassword){
-        fetch('http://192.168.43.163:5000/api/gyresources/users/', {
+        fetch(config.API_URL+'/users/', {
         method: 'POST',
         headers: {
           Accept: 'application/json',

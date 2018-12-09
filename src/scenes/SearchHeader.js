@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { SearchBar } from 'react-native-elements';
+import { config } from '../../config'
 
 class SearchHeader extends Component {
 	render() {

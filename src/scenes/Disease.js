@@ -7,6 +7,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import ViewMoreText from 'react-native-view-more-text';
+import { config } from '../../config'
 
 export default class Disease extends Component {
   constructor(){

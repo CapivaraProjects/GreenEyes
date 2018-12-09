@@ -20,6 +20,7 @@ import {
 import { CardList } from 'react-native-card-list';
 import { Right } from 'native-base';
 import store from 'react-native-simple-store'
+import { config } from '../../config'
 
 export default class Analisys extends Component {
   constructor() {
@@ -54,8 +55,11 @@ export default class Analisys extends Component {
       loading: true,
       aux: 0,
       cards: [],
+      interval: null,
+      idAnalisys: 0,
     }
     const diseaseInfo = {id: 0};
+    const content ={}
   }
 
   static navigationOptions = {
@@ -97,33 +101,7 @@ export default class Analisys extends Component {
                 <ProgressBarAndroid styleAttr="Small"/>
                 <TouchableOpacity
                   onPress={() => {this.getDisease(this.state.idDisease1)}}>
-                  <Text style={{ color: 'blue' }}>{this.state.percent1}</Text>
-                </TouchableOpacity>
-              </View>
-            </Right>
-          </View>
-          <View style={styles.analisys}>
-            <Icon name='bug-report'></Icon>
-            <Text> {this.state.analisys2}</Text>
-            <Right>
-              <View flexDirection='row'>
-                {this.progress}
-                <TouchableOpacity
-                  onPress={() => {this.getDisease(this.state.idDisease2)}}>
-                  <Text style={{ color: 'blue' }}>{this.state.percent2}</Text>
-                </TouchableOpacity>
-              </View>
-            </Right>
-          </View>
-          <View style={styles.analisys}>
-            <Icon name='bug-report'></Icon>
-            <Text> {this.state.analisys3}</Text>
-            <Right>
-              <View flexDirection='row'>
-                {this.progress}
-                <TouchableOpacity
-                  onPress={() => {this.getDisease(this.state.idDisease3)}}> 
-                  <Text style={{ color: 'blue' }}>{this.state.percent3}</Text>
+                  <Text style={{ color: 'blue' }}>Processando {this.progress}</Text> 
                 </TouchableOpacity>
               </View>
             </Right>
@@ -144,7 +122,7 @@ export default class Analisys extends Component {
 
   sendImage() {
     console.log("log do sendImage:" + this.props.screenProps.token.token)
-    fetch('http://192.168.43.163:5000/api/gyresources/images/', {
+    fetch(config.API_URL+'/images/', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -161,7 +139,7 @@ export default class Analisys extends Component {
       }),
     }).then((response) => response.json())
       .then(response => {
-        if (response.status_code == 200 || response.status_code == 201) {
+        if(response.status_code == 200 || response.status_code == 201) {
           Alert.alert(title = 'Imagem enviada!')
           this.setState({ idImagem: response.response.id });
           console.log(response.status_code + ',' + response.message)
@@ -175,7 +153,7 @@ export default class Analisys extends Component {
 
   addAnalysis() {
     console.log("Cheguei no addAnalisys");
-    fetch('http://192.168.43.163:5000/api/gyresources/analysis/', {
+    fetch(config.API_URL+'/analysis/', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -191,14 +169,27 @@ export default class Analisys extends Component {
     }).then((response) => response.json())
       .then(response => {
           console.log(response);
-          this.setState();
+          console.log(response.response.id);
+          this.setState({idAnalisys: response.response.id});
           this.roda();
           console.log('Token: ' + this.props.screenProps.token.token + ', Id: ' + this.state.idImagem + ', Message from API: ' + response.message);          
           Alert.alert(title = 'Realizando análise!');
         
      }).catch( (error) =>{ 
+        if (error.includes("Network")) {
+         resp = this.getAnalisys(this.state.idImagem, this.state.idClassifier) 
+         console.log(response);
+         console.log(response.response.id);
+         this.setState({idAnalisys: response.response.id});
+         this.roda();
+         console.log('Token: ' + this.props.screenProps.token.token + ', Id: ' + this.state.idImagem + ', Message from API: ' + response.message);          
+         Alert.alert(title = 'Realizando análise!');
        
-        Alert.alert(title = 'Error: '+error);
+        } else {
+          Alert.alert(title = 'Error: '+error);
+          this.addAnalysis();
+        }
+        
      });
   }
 
@@ -206,20 +197,37 @@ export default class Analisys extends Component {
     var runningcounter = 0;
     var res = '';     
     var _this = this;
-    var interval = setInterval(function()  {
+    this.state.interval = setInterval(function()  {
       runningcounter += 1;
       if(runningcounter == 4 ){
-        clearInterval(interval); 
+        clearInterval(_this.state.interval); 
       }
       _this.analisysComplete();
     }, 15000);
   }
 
+  para(){
+    clearInterval(this.state.interval);
+  }
+
+  getAnalisys = function(idImage, idClassifier) {
+    Alert.alert("Consulta analise");
+    var res ='';
+      console.log("Log do analisysComplete");
+      fetch(config.API_URL+'/analysis/?action=search&idImage='+idImage+'&idClassifier='+idClassifier, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'dataType': 'json'
+      }
+      }).then((response) => response.text())
+    }
   analisysComplete = function() {
     Alert.alert("Iniciando consulta!");
     var res ='';
       console.log("Log do analisysComplete");
-      fetch('http://192.168.43.163:5000/api/gyresources/analysis/?action=searchByID&id=2775', {
+      fetch(config.API_URL+'/analysis/?action=searchByID&id='+this.state.idAnalisys, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -230,10 +238,11 @@ export default class Analisys extends Component {
       .then(response => {
         res = response;
         var counter = {};
+        
         response = JSON.parse(response);
         if (response.response.analysis_results.length > 0) {
-          Alert.alert("Quase terminando!")
-          
+          Alert.alert("Quase terminando!");
+          this.para();
           counter[response.response.analysis_results[0].disease.id] = 0;
           console.log("COUNTER_V2: "+Object.keys(counter)+" , TIPO"+typeof counter);
           for(var i = 0; i < response.response.analysis_results.length; i++) {
@@ -279,7 +288,7 @@ export default class Analisys extends Component {
             this.setState({analisys1: "Saudável", analisys2: "", analisys3: ""});
           }else{
             this.setState({analisys1: diseases[0].scientificName});
-            store.push('diseaseInfo', diseases[0].id);
+            //store.push('diseaseInfo', diseases[0].id);
             this.setState(this.state.cards[parseInt(this.state.id)-1] = {
               id: (parseInt(this.state.id)-1).toString(),
               title: 'Analise id: ' + (parseInt(this.state.id)-1).toString(),
@@ -307,11 +316,12 @@ export default class Analisys extends Component {
                           Aplicativo GreenEyes pode te oferecer!</Text>
               </View>
             });
+            this.setState({ id: parseInt(this.state.id) + 1 });
             if(diseases[1] == null){
               this.setState({analisys2: "Saudável", analisys3: ""});
             }else{
               this.setState({analisys2: diseases[1].scientificName});
-              store.push('diseaseInfo', diseases[1].id);
+              //store.push('diseaseInfo', diseases[1].id);
               this.setState(this.state.cards[parseInt(this.state.id)-1] = {
                 id: (parseInt(this.state.id)-1).toString(),
                 title: 'Analise id: ' + parseInt(this.state.id)-1,
@@ -339,11 +349,12 @@ export default class Analisys extends Component {
                             Aplicativo GreenEyes pode te oferecer!</Text>
                 </View>
               });
+              this.setState({ id: parseInt(this.state.id) + 1 });
               if(diseases[2] == null){
                 this.setState({analisys3: "Saudável"});
               }else{
                 this.setState({analisys3: diseases[2].scientificName})
-                store.push('diseaseInfo', diseases[2].id);
+                //store.push('diseaseInfo', diseases[2].id);
                 this.setState(this.state.cards[parseInt(this.state.id)-1] = {
                   id: (parseInt(this.state.id)-1).toString(),
                   title: 'Analise id: ' + parseInt(this.state.id)-1,
@@ -371,6 +382,7 @@ export default class Analisys extends Component {
                               Aplicativo GreenEyes pode te oferecer!</Text>
                   </View>
                 });
+                this.setState({ id: parseInt(this.state.id) + 1 });
               }
             }
           }
@@ -381,10 +393,9 @@ export default class Analisys extends Component {
         }
       }).catch((error) => {
         console.log("Erro: "+error)
-      });
-    
-  }
-
+      }); 
+    }
+  
   render() {
     return (
       <View style={styles.MainContainer}>

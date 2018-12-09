@@ -10,6 +10,7 @@ import {
 import ViewMoreText from 'react-native-view-more-text';
 import img from '../tomate2.jpg';
 import store from 'react-native-simple-store'
+import { config } from '../../config'
 
 class SearchBody extends Component {
   static navigationOptions = {
@@ -156,7 +157,7 @@ class SearchBody extends Component {
   }
 
   getText() {
-    fetch('http://192.168.43.163:5000/api/gyresources/texts/' + '', {
+    fetch(config.API_URL+'/texts/' + '', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',

@@ -73,10 +73,17 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    entryFile: "index.js"
+        entryFile: "index.js"
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+project.ext.envConfigFiles = [
+        debug: ".env",
+        release: ".env",
+        anothercustombuild: ".env",
+]
+apply from: project(':react-native-config').projectDir.getPath() + '/dotenv.gradle'
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -118,6 +125,7 @@ android {
     buildTypes {
         release {
             minifyEnabled enableProguardInReleaseBuilds
+            matchingFallbacks = ['release', 'debug']
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
@@ -138,6 +146,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-config')
+    implementation project(':react-native-gesture-handler')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-image-picker')
     implementation fileTree(include: ['*.jar'], dir: 'libs')

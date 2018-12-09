@@ -4,6 +4,7 @@ import {
   View,
   StyleSheet,
 } from 'react-native';
+import { config } from '../../config'
 
 export default class Howto extends Component {
   static navigationOptions = {
