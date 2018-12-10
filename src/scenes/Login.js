@@ -4,7 +4,7 @@ import { Button, FormLabel, FormInput, FormValidationMessage, Text } from 'react
 import { TextField } from 'react-native-material-textfield'
 import store from 'react-native-simple-store';
 import { config } from '../../config'
-
+import { authenticate } from '../api/UserApi'
 export default class Login extends Component {
   state = {
     username: '',
@@ -61,42 +61,21 @@ export default class Login extends Component {
       </View>
     );
   }
-  teste(){
-    Alert.alert(
-      title = 'Ops!', config.API_URL)
-  }
   auth() {
     if (this.state.username == null || this.state.password == null) {
-      Alert.alert(
-        title = 'Ops!',
-        'Preencha os campos corretamente!')
-      console.log("Fields incorrectly filled")
+      Alert.alert(title = 'Ops!', 'Preencha os campos corretamente!')
     }
     else {
       window.btoa = window.btoa || require('Base64').btoa;
       creds = btoa(this.state.username + ":" + this.state.password);
-      fetch( config.API_URL+'/token/', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Basic ' + creds
-        },
-      }).then(response => response.json())
-        .then(response => {
+      authenticate({creds}).then(response => {
           if (response.status_code == 200) {
-            this.props.navigation.navigate('Main', {
-              token: response.response.token
-            });
-            //store.push("userinfo", JSON.parse(response.response));
-            console.log("Logged successfully !"+ response.response.token);
+            this.props.navigation.navigate('Main',{token: response.response.token, userId: response.response.id});
+            console.log("user token: "+response.response.token);
+            console.log("user id: "+response.response.token);
           } else{
             Alert.alert("Usuário ou senha inválido");
           }
-        })
-        .catch((error) => {
-          
-          console.error(error);
         });
     }
   }
