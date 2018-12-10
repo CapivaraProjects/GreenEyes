@@ -10,7 +10,7 @@
     "Base64": "^1.0.1",
     "native-base": "^2.8.1",
     "react": "16.6.1",
-    "react-native": "0.57.7",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-29.0.0.tar.gz",
     "react-native-action-button": "^2.8.5",
     "react-native-card-list": "^0.1.0",
     "react-native-config": "^0.11.7",
@@ -45,14 +45,14 @@
     "util": "^0.10.4",
     "vm-browserify": "0.0.4",
     "watchman": "^1.0.0"
-   },
+  },
   "devDependencies": {
     "babel-jest": "23.6.0",
-    "jest": "23.6.0",
-    "metro-react-native-babel-preset": "0.50.0",
     "babel-preset-react-native": "4.0.0",
-    "rn-nodeify": "github:tradle/rn-nodeify",
-    "react-test-renderer": "16.6.1"
+    "jest": "23.6.0",
+    "metro-react-native-babel-preset": "^0.50.0",
+    "react-test-renderer": "16.6.1",
+    "rn-nodeify": "github:tradle/rn-nodeify"
   },
   "jest": {
     "preset": "react-native"
