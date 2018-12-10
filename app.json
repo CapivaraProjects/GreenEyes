@@ -1,7 +1,7 @@
 {
-  "name": "GreenEyes",
+  "name": "main",
   "displayName": "GreenEyes",
   "expo": {
-    "sdkVersion": "26.0.0"
+    "sdkVersion": "29.0.0"
   }
 }
