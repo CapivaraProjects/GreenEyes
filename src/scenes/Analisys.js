@@ -210,6 +210,34 @@ export default class Analisys extends Component {
     clearInterval(this.state.interval);
   }
 
+  /**
+   * Calculate probabilities based on analysis resulst
+   **/
+  calculateProbs({analysis_results}) {
+    var total = 0
+    for(var i = 0; i < analysis_results.length; i++) {
+
+      stringified_id = JSON.stringify(analysis_results[i].disease.id)
+      if (!(counter.hasOwnProperty(stringified_id))) {
+        counter[stringified_id] = 1
+        console.log('Inseri 1: '+stringified_id)
+      }
+      else {
+        counter[stringified_id] += 1
+        console.log('Inseri +=1: '+stringified_id)
+      }
+      total += 1
+      console.log("COUNTER_V3: "+JSON.stringify(counter))
+    }
+
+    var probs = {}
+    keys = counter.keys()  
+    for (var j = 0; j < keys.length; j++) {
+      probs[keys[j]] = (counter[keys[j]] / total) * 100
+    }
+    return probs
+  }
+
   getAnalisys = function(idImage, idClassifier) {
     Alert.alert("Consulta analise");
     var res ='';
@@ -243,20 +271,23 @@ export default class Analisys extends Component {
         if (response.response.analysis_results.length > 0) {
           Alert.alert("Quase terminando!");
           this.para();
-          counter[response.response.analysis_results[0].disease.id] = 0;
+          // counter[response.response.analysis_results[0].disease.id] = 0;
           console.log("COUNTER_V2: "+Object.keys(counter)+" , TIPO"+typeof counter);
+          var total = 0
           for(var i = 0; i < response.response.analysis_results.length; i++) {
 
             //if (!(JSON.stringify(response.response.analysis_results[i].disease.id) in Object.keys(counter))) {
-            if (!(counter.hasOwnProperty(JSON.stringify(response.response.analysis_results[i].disease.id)))) {
-                counter[response.response.analysis_results[i].disease.id] = 1
-              console.log('Inseri 1: '+JSON.stringify(response.response.analysis_results[i].disease.id));
+            stringified_id = JSON.stringify(response.response.analysis_results[i].disease.id)
+            if (!(counter.hasOwnProperty(stringified_id))) {
+              counter[stringified_id] = 1
+              console.log('Inseri 1: '+stringified_id);
             }
             else {
-              counter[response.response.analysis_results[i].disease.id] += 1
-              console.log('Inseri +=1: '+JSON.stringify(response.response.analysis_results[i].disease.id));
+              counter[stringified_id] += 1
+              console.log('Inseri +=1: '+stringified_id);
             }
-            console.log("COUNTER_V3: "+Object.keys(counter));
+            total += 1
+            console.log("COUNTER_V3: "+JSON.stringify(counter));
           }
 
           var greater = [response.response.analysis_results[0].disease.id, response.response.analysis_results[0].disease.id, response.response.analysis_results[0].disease.id];
