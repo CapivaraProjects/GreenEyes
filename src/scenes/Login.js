@@ -4,7 +4,7 @@ import { Button, FormLabel, FormInput, FormValidationMessage, Text } from 'react
 import { TextField } from 'react-native-material-textfield'
 import store from 'react-native-simple-store';
 import { config } from '../../config'
-import { authenticate } from '../api/UserApi'
+import { authenticate } from '../api/AuthApi'
 export default class Login extends Component {
   state = {
     username: '',
