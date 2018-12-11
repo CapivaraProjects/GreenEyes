@@ -21,6 +21,7 @@ import { CardList } from 'react-native-card-list';
 import { Right } from 'native-base';
 import store from 'react-native-simple-store'
 import { config } from '../../config'
+import { db } from '../index'
 
 export default class Analisys extends Component {
   constructor() {
@@ -210,6 +211,52 @@ export default class Analisys extends Component {
     clearInterval(this.state.interval);
   }
 
+  /**
+   * Calculate probabilities based on analysis resulst
+   **/
+  calculateProbs({analysis_results}) {
+    var total = 0
+    for(var i = 0; i < analysis_results.length; i++) {
+
+      stringified_id = JSON.stringify(analysis_results[i].disease.id)
+      if (!(counter.hasOwnProperty(stringified_id))) {
+        counter[stringified_id] = 1
+        console.log('Inseri 1: '+stringified_id)
+      }
+      else {
+        counter[stringified_id] += 1
+        console.log('Inseri +=1: '+stringified_id)
+      }
+      total += 1
+      console.log("COUNTER_V3: "+JSON.stringify(counter))
+    }
+
+    var probs = {}
+    keys = counter.keys()  
+    for (var j = 0; j < keys.length; j++) {
+      probs[keys[j]] = (counter[keys[j]] / total) * 100
+    }
+    return probs
+  }
+
+  insertAnalysis({analysis, greater_class, greater_prob}) {
+    db.transaction(tx => {
+      tx.executeSql(
+        "INSERT INTO analysis(id, id_image, id_classifier, id_user, result_class, result_prob) VALUES (?, ?, ?, ?, ?, ?)",
+        [
+            analysis.id,
+            analysis.id_image,
+            analysis.id_classifier,
+            analysis.id_user,
+            greater_class,
+            greater_prob
+        ],
+        (_, { rows: { _array } }) => console.log('added: '+JSON.stringify(_array)),
+        (_, error) => console.log('error: ' + error.message),
+      )
+    })
+  }
+
   getAnalisys = function(idImage, idClassifier) {
     Alert.alert("Consulta analise");
     var res ='';
@@ -243,34 +290,21 @@ export default class Analisys extends Component {
         if (response.response.analysis_results.length > 0) {
           Alert.alert("Quase terminando!");
           this.para();
-          counter[response.response.analysis_results[0].disease.id] = 0;
+          // counter[response.response.analysis_results[0].disease.id] = 0;
           console.log("COUNTER_V2: "+Object.keys(counter)+" , TIPO"+typeof counter);
-          for(var i = 0; i < response.response.analysis_results.length; i++) {
-
-            //if (!(JSON.stringify(response.response.analysis_results[i].disease.id) in Object.keys(counter))) {
-            if (!(counter.hasOwnProperty(JSON.stringify(response.response.analysis_results[i].disease.id)))) {
-                counter[response.response.analysis_results[i].disease.id] = 1
-              console.log('Inseri 1: '+JSON.stringify(response.response.analysis_results[i].disease.id));
-            }
-            else {
-              counter[response.response.analysis_results[i].disease.id] += 1
-              console.log('Inseri +=1: '+JSON.stringify(response.response.analysis_results[i].disease.id));
-            }
-            console.log("COUNTER_V3: "+Object.keys(counter));
-          }
-
+          probs = calculateProbs(response.response.analysis_results)
           var greater = [response.response.analysis_results[0].disease.id, response.response.analysis_results[0].disease.id, response.response.analysis_results[0].disease.id];
           console.log('COUNTER: '+JSON.stringify(counter));
           for (var i = 0; i < greater.length; i++) {
             var index = 0
             var aux = 0
-            for (var key in counter) {
-              if (counter[key] > aux)
+            for (var key in prob) {
+              if (prob[key] > aux)
                 index = key
-                aux = counter[key]
+                aux = prob[key]
             }
             greater[i] = index
-            delete counter[index]
+            delete prob[index]
           }
           console.log('APARECE MAIS: '+JSON.stringify(greater));
 
