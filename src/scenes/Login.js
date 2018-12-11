@@ -6,6 +6,7 @@ import store from 'react-native-simple-store';
 import { config } from '../../config'
 import { db } from '../index'
 
+import { authenticate } from '../api/AuthApi'
 export default class Login extends Component {
   state = {
     username: '',
@@ -114,29 +115,14 @@ export default class Login extends Component {
       </View>
     );
   }
-  teste(){
-    Alert.alert(
-      title = 'Ops!', config.API_URL)
-  }
   auth() {
     if (this.state.username == null || this.state.password == null) {
-      Alert.alert(
-        title = 'Ops!',
-        'Preencha os campos corretamente!')
-      console.log("Fields incorrectly filled")
+      Alert.alert(title = 'Ops!', 'Preencha os campos corretamente!')
     }
     else {
       window.btoa = window.btoa || require('Base64').btoa;
       creds = btoa(this.state.username + ":" + this.state.password);
-      fetch( config.API_URL+'/token/', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Basic ' + creds
-        },
-      }).then(response => response.json())
-        .then(response => {
+      authenticate({creds}).then(response => {
           if (response.status_code == 200) {
             fetch( config.API_URL+'/users/?action=searchByID&id=' + response.response.id_user, {
               method: 'GET',
@@ -180,10 +166,6 @@ export default class Login extends Component {
           } else{
             Alert.alert("Usuário ou senha inválido");
           }
-        })
-        .catch((error) => {
-          
-          console.error(error);
         });
     }
   }
