@@ -46,7 +46,7 @@ export function sendEmail ({email, generatedCode}) {
       .catch(error => console.error(error));
 }
 
-export function createUser ({}) {
+export function createUser ({username, email, password}) {
     return fetch(config.API_URL+'/users/', {
         method: 'POST',
         headers: {
