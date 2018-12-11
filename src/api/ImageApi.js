@@ -1,7 +1,7 @@
 import {config} from '../../config'
 
 export function sendImage ({token, source64, username}) {
-    fetch(config.API_URL+'/images/', {
+    return fetch(config.API_URL+'/images/', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',

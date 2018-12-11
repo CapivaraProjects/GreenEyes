@@ -1,7 +1,7 @@
 import {config} from '../../config'
 
 export function getPlant ({ plantCommomName }) {
-    fetch(config.API_URL+'/plants/?action=search&commonName=' + plantCommomName + '&pageSize=10&offset=0', {
+    return  fetch(config.API_URL+'/plants/?action=search&commonName=' + plantCommomName + '&pageSize=10&offset=0', {
         headers: {
             'Accept': 'application/json',
         }
