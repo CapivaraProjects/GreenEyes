@@ -2,6 +2,11 @@
   "name": "main",
   "displayName": "GreenEyes",
   "expo": {
-    "sdkVersion": "29.0.0"
+    "name": "Green Eyes",
+    "description": "Recognizment of disease in plants by leaf images",
+    "sdkVersion": "29.0.0",
+    "android": {
+      "package": "org.capivara_projects.green_eyes"
+    }
   }
 }
