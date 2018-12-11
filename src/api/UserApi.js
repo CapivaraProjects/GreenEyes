@@ -1,18 +1,6 @@
 import {config} from '../../config'
 
-export function authenticate ({creds}) {
-    return fetch( config.API_URL+'/token/', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Basic ' + creds
-        }
-    }).then(response => response.json())
-      .catch(error => console.error(error));
-}
-
-// always you will need a token, then for cases as Password recovery we need get de user,
+// always you will need a token, then for cases as Password recovery we need get de user with chekEmail function,
 // generate the token, and update the user record with the new generated password
 export function userUpdate ({token, userId, userEmail, username, dateInsertion, password}) {
     fetch(config.API_URL+'/users/', {
