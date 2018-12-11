@@ -16,7 +16,7 @@ export default class Main extends Component {
     render() {
       console.log(this.props.navigation.state);
       return (
-        <AppTabNavigator screenProps={{token: this.props.navigation.state.params}}/>
+        <AppTabNavigator screenProps={{token: this.props.navigation.state.params.token, user: this.props.navigation.state.user}}/>
     );
   }
 }
