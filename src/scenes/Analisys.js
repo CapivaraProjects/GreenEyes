@@ -21,6 +21,7 @@ import { CardList } from 'react-native-card-list';
 import { Right } from 'native-base';
 import store from 'react-native-simple-store'
 import { config } from '../../config'
+import { db } from '../index'
 
 export default class Analisys extends Component {
   constructor() {
@@ -236,6 +237,24 @@ export default class Analisys extends Component {
       probs[keys[j]] = (counter[keys[j]] / total) * 100
     }
     return probs
+  }
+
+  insertAnalysis({analysis, greater_class, greater_prob}) {
+    db.transaction(tx => {
+      tx.executeSql(
+        "INSERT INTO analysis(id, id_image, id_classifier, id_user, result_class, result_prob) VALUES (?, ?, ?, ?, ?, ?)",
+        [
+            analysis.id,
+            analysis.id_image,
+            analysis.id_classifier,
+            analysis.id_user,
+            greater_class,
+            greater_prob
+        ],
+        (_, { rows: { _array } }) => console.log('added: '+JSON.stringify(_array)),
+        (_, error) => console.log('error: ' + error.message),
+      )
+    })
   }
 
   getAnalisys = function(idImage, idClassifier) {
