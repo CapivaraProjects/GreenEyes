@@ -1,7 +1,7 @@
 import {config} from '../../config'
 
 export function createAnalisys ({token, idImagem, idClassifier, idUser}) {
-    fetch(config.API_URL+'/analysis/', {
+  return fetch(config.API_URL+'/analysis/', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -27,7 +27,7 @@ export function createAnalisys ({token, idImagem, idClassifier, idUser}) {
 }
 
 export function getAnalisys ({idImage, idUser}) {
-    fetch(config.API_URL+'/analysis/?action=search&idImage='+idImage+'&idUser='+idUser, {
+  return fetch(config.API_URL+'/analysis/?action=search&idImage='+idImage+'&idUser='+idUser, {
         method: 'GET',
         headers: {
         'Accept': 'application/json'
@@ -46,7 +46,7 @@ export function getUserAnalisys (idUser) {
 }
 
 export function getAnalisysById ({idAnalisys}) {
-    fetch(config.API_URL+'/analysis/?action=searchByID&id='+idAnalisys, {
+  return fetch(config.API_URL+'/analysis/?action=searchByID&id='+idAnalisys, {
         method: 'GET',
         headers: {
           'Accept': 'application/json'

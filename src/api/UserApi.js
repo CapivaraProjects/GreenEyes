@@ -3,7 +3,7 @@ import {config} from '../../config'
 // always you will need a token, then for cases as Password recovery we need get de user with chekEmail function,
 // generate the token, and update the user record with the new generated password
 export function userUpdate ({token, userId, userEmail, username, dateInsertion, password}) {
-    fetch(config.API_URL+'/users/', {
+    return fetch(config.API_URL+'/users/', {
         method: 'PUT',
         headers: {
           Accept: 'application/json',
@@ -25,7 +25,7 @@ export function userUpdate ({token, userId, userEmail, username, dateInsertion, 
 }
 
 export function checkEmail ({username, email}) {
-    fetch(config.API_URL+'/users/?action=search&username='+ username +'&email=' + email + '&pageSize=1&offset=0', {
+    return fetch(config.API_URL+'/users/?action=search&username='+ username +'&email=' + email + '&pageSize=1&offset=0', {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -35,7 +35,7 @@ export function checkEmail ({username, email}) {
 }
 
 export function sendEmail ({email, generatedCode}) {
-    fetch(config.API_URL+'/messages/', {
+    return fetch(config.API_URL+'/messages/', {
         method: 'POST',
         headers: {
             Accept: 'application/json',
@@ -47,7 +47,7 @@ export function sendEmail ({email, generatedCode}) {
 }
 
 export function createUser ({}) {
-    fetch(config.API_URL+'/users/', {
+    return fetch(config.API_URL+'/users/', {
         method: 'POST',
         headers: {
           Accept: 'application/json',

@@ -5,7 +5,7 @@ import {config} from '../../config'
 export function getContent({commomname, statusHelthy}){
   const atributes = ["commonName","scientificName", "description", "sintoms", "bioeco", "control"]  
   var text_content = {};
-  atributes.map((atribute) => {
+  return atributes.map((atribute) => {
     text_content[atribute] = getText(commomname, statusHelthy, atribute, config.LANG)
   }).then(text_content => text_content.json());
 }
