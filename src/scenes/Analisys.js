@@ -292,35 +292,19 @@ export default class Analisys extends Component {
           this.para();
           // counter[response.response.analysis_results[0].disease.id] = 0;
           console.log("COUNTER_V2: "+Object.keys(counter)+" , TIPO"+typeof counter);
-          var total = 0
-          for(var i = 0; i < response.response.analysis_results.length; i++) {
-
-            //if (!(JSON.stringify(response.response.analysis_results[i].disease.id) in Object.keys(counter))) {
-            stringified_id = JSON.stringify(response.response.analysis_results[i].disease.id)
-            if (!(counter.hasOwnProperty(stringified_id))) {
-              counter[stringified_id] = 1
-              console.log('Inseri 1: '+stringified_id);
-            }
-            else {
-              counter[stringified_id] += 1
-              console.log('Inseri +=1: '+stringified_id);
-            }
-            total += 1
-            console.log("COUNTER_V3: "+JSON.stringify(counter));
-          }
-
+          probs = calculateProbs(response.response.analysis_results)
           var greater = [response.response.analysis_results[0].disease.id, response.response.analysis_results[0].disease.id, response.response.analysis_results[0].disease.id];
           console.log('COUNTER: '+JSON.stringify(counter));
           for (var i = 0; i < greater.length; i++) {
             var index = 0
             var aux = 0
-            for (var key in counter) {
-              if (counter[key] > aux)
+            for (var key in prob) {
+              if (prob[key] > aux)
                 index = key
-                aux = counter[key]
+                aux = prob[key]
             }
             greater[i] = index
-            delete counter[index]
+            delete prob[index]
           }
           console.log('APARECE MAIS: '+JSON.stringify(greater));
 
