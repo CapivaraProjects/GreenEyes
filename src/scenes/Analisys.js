@@ -214,29 +214,70 @@ export default class Analisys extends Component {
   /**
    * Calculate probabilities based on analysis resulst
    **/
-  calculateProbs({analysis_results}) {
+  calculateProbs(analysis_results) {
     var total = 0
+    var counter = {}
     for(var i = 0; i < analysis_results.length; i++) {
-
       stringified_id = JSON.stringify(analysis_results[i].disease.id)
-      if (!(counter.hasOwnProperty(stringified_id))) {
-        counter[stringified_id] = 1
-        console.log('Inseri 1: '+stringified_id)
+      if((analysis_results[i].disease.id!='62')){
+        if (!(analysis_results[i].disease.id in counter) ){
+          counter[stringified_id] = []
+        }
+        counter[stringified_id].push(analysis_results[i])
+        total += 1
       }
-      else {
-        counter[stringified_id] += 1
-        console.log('Inseri +=1: '+stringified_id)
-      }
-      total += 1
-      console.log("COUNTER_V3: "+JSON.stringify(counter))
     }
-
     var probs = {}
-    keys = counter.keys()  
+    keys = Object.keys(counter)  
+    console.log(keys)
     for (var j = 0; j < keys.length; j++) {
-      probs[keys[j]] = (counter[keys[j]] / total) * 100
+      probs[keys[j]] = (counter[keys[j]].length / total) * 100
     }
+    //console.log('probs: '+JSON.stringify(probs))
     return probs
+  }
+  
+  
+  /**
+   * Return details of the diseases of analysis results
+   */
+  detailDiseases(analysis_results, probs) {
+    var details = {}
+    var disease = {'id':0, 'scientificName':"", 'percentage':0.0}
+    keys = Object.keys(probs)
+    for(i = 0; i < keys.length; i++) {
+      for(j = 0; j < analysis_results.length; j++) {
+        if(analysis_results[j].disease.id == keys[i]){
+          details[analysis_results[j].disease.id] = {'id':analysis_results[j].disease.id, 'scientificName':analysis_results[j].disease.scientificName, 'percentage':probs[analysis_results[j].disease.id]}
+          break
+        }
+      }
+    }
+    //console.log('Details: '+JSON.stringify(details))
+    return details
+  }
+  
+  /**
+   * Sort results in percentage ascending order
+   */
+  sort(results_details) {
+    var temp = results_details
+    keys = Object.keys(results_details)
+    var sorted = {}
+    for(i = 0; i < keys.length; i++) {
+      var index = 0
+      var aux = {'id':0, 'scientificName':'', 'percentage':0}
+      for(var key in temp) {
+        if(temp[key].percentage > aux.percentage) {
+          index = key
+          aux = temp[key]
+        }
+      }
+      sorted[i] = temp[index]
+      delete temp[index]
+    }
+    //console.log('APARECE MAIS: '+JSON.stringify(sorted));
+    return sorted
   }
 
   insertAnalysis({analysis, greater_class, greater_prob}) {
