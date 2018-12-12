@@ -3,6 +3,7 @@ import { Container } from 'native-base';
 import { List, ListItem, Icon, Text } from "react-native-elements";
 import { StyleSheet, Keyboard, View } from 'react-native';
 import SearchHeader from './SearchHeader';
+import { config } from '../../config'
 
 export default class Plants extends Component {
 	static navigationOptions = {
